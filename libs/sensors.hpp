@@ -20,6 +20,7 @@
 
 #include <string>
 #include <cstdio>           ///< For sscanf
+#include <type_traits>      ///< For is_same
 #include <unordered_map>
 #include <map>
 
@@ -54,11 +55,13 @@ enum SensorStatus {
  *
  * - INT: int.
  * - DOUBLE: double.
+*  - FLOAT: float.
  * - STRING: string.
  */
 enum class DataType {
     INT,
     DOUBLE,
+    FLOAT,
     STRING
 };
 
@@ -282,11 +285,11 @@ public:
             logMessage("\tSensor Error: %s\n", getError().c_str());
             logMessage("\tSensor Configurations:\n");
             for (auto &c : Configs) {
-                logMessage("\t\t%s: %s\n", c.first.c_str(), c.second.Value.c_str());
+                logMessage("\t\t%s: %s %s\n", c.first.c_str(), c.second.Value.c_str(), c.second.Unit.c_str());
             }
             logMessage("\tSensor Values:\n");
             for (auto &v : Values) {
-                logMessage("\t\t%s: %s\n", v.first.c_str(), v.second.Value.c_str());
+                logMessage("\t\t%s: %s %s\n", v.first.c_str(), v.second.Value.c_str(), v.second.Unit.c_str());
             }
         }
         catch(const std::exception& e)
@@ -340,14 +343,36 @@ public:
     virtual ~ADC() {}
 
     /**
-     * @brief Initializes the ADC sensor.
+     * @brief Factory function to create an ADC sensor.
      * 
-     * Additional ADC initialization code can be added here.
+     * This function creates an ADC sensor object with the given UID and returns a pointer to it.
+     * If initialization fails, it logs the error, deletes the partially constructed object, and rethrows the exception.
+     * 
+     * @param uid The unique sensor identifier.
+     * @return Pointer to the newly created ADC sensor.
+     * @throws std::exception if sensor initialization fails.
+     */
+    static ADC* create(int uid) {
+        ADC *sensor = nullptr;
+        try {
+            sensor = new ADC(uid);
+        } catch (const std::exception &ex) {
+            logMessage("Error during sensor initialization: %s\n", ex.what());
+            delete sensor;
+            throw;
+        }
+        return sensor;
+    }
+
+    /**
+     * @brief Initializes the sensor.
+     * 
+     * Additional initialization code can be added here.
      * 
      * @throws Exception if initialization fails.
      */
     virtual void init() override {
-        // Additional initialization for ADC can be added here.
+        // Additional initialization for sensor can be added here.
         Type = "ADC";
         Description = "Analog to Digital Converter";
         Error = nullptr;
@@ -366,12 +391,17 @@ public:
     }
 
     /**
-     * @brief Draw ADC sensor.
+     * @brief Draw sensor.
      * 
-     * This function draws the ADC sensor.
+     * This function draws the sensor.
      */
     virtual void draw() override {
-        // Draw ADC sensor
+        if (!redrawPenging)
+        {
+            return;
+        }
+        
+        // Draw sensor
 
         // Call draw function here
         //TODO: Implement draw function
@@ -381,20 +411,101 @@ public:
     }
 };
 
+
+/**************************************************************************/
+
+class TH : public BaseSensor {
+    public:
+        /**
+         * @brief Constructs a new TH object.
+         * 
+         * Initializes default values and sets the sensor type and description.
+         * 
+         * @param uid The unique sensor identifier.
+         */
+        TH(int uid) : BaseSensor(uid){
+            init();
+        }
+    
+        /**
+         * @brief Virtual destructor.
+         */
+        virtual ~TH() {}
+
+        /**
+         * @brief Factory function to create an TH sensor.
+         * 
+         * This function creates an TH sensor object with the given UID and returns a pointer to it.
+         * If initialization fails, it logs the error, deletes the partially constructed object, and rethrows the exception.
+         * 
+         * @param uid The unique sensor identifier.
+         * @return Pointer to the newly created TH sensor.
+         * @throws std::exception if sensor initialization fails.
+         */
+        static TH* create(int uid) {
+            TH *sensor = nullptr;
+            try {
+                sensor = new TH(uid);
+            } catch (const std::exception &ex) {
+                logMessage("Error during sensor initialization: %s\n", ex.what());
+                delete sensor;
+                throw;
+            }
+            return sensor;
+        }
+    
+        /**
+         * @brief Initializes the sensor.
+         * 
+         * Additional initialization code can be added here.
+         * 
+         * @throws Exception if initialization fails.
+         */
+        virtual void init() override {
+            // Additional initialization for sensor can be added here.
+            Type = "TH";
+            Description = "Temperature & Humidity Sensor";
+            Error = nullptr;
+    
+            try
+            {
+                // Default configs
+                addConfigParameter("Precision", {"2", "decimals", DataType::INT});
+                // Default values
+                addValueParameter("Temperature", {"0", "Celsia", DataType::FLOAT});
+                addValueParameter("Humidity", {"0", "%", DataType::INT});
+            }
+            catch(const std::exception& e)
+            {
+                throw;
+            }
+        }
+    
+        /**
+         * @brief Draw sensor.
+         * 
+         * This function draws the sensor.
+         */
+        virtual void draw() override {
+            if (!redrawPenging)
+            {
+                return;
+            }
+            // Draw sensor
+
+            // Call draw function here
+            //TODO: Implement draw function
+
+            
+            redrawPenging = false; // Reset flag to redraw sensor.
+        }
+    };
+
+
 /**************************************************************************/
 // CREATE FUNCTIONS
 /**************************************************************************/
-
- /**
-  * @brief Factory function to create an ADC sensor instance.
-  * 
-  * Dynamically allocates an ADC sensor, calls initSensor(), and returns the pointer.
-  * 
-  * @param uid The unique sensor identifier.
-  * @return Pointer to the newly created ADC sensor.
-  * @throws std::runtime_error if initialization fails.
-  */
- ADC* createADC(int uid);
+//implemented in sensors classes...
 
  /**************************************************************************/
 // GENERAL FUNCTIONS

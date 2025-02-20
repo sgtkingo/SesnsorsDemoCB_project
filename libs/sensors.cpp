@@ -15,6 +15,9 @@
 #include "sensors.hpp"
 #include <stdexcept>
 
+/*Global functions*/
+
+
 std::string getValueFromKeyValueLikeString(std::string str, std::string key) {
     std::string value;
     size_t pos = str.find(key);
@@ -27,17 +30,11 @@ std::string getValueFromKeyValueLikeString(std::string str, std::string key) {
     return value;
 }
 
-ADC* createADC(int uid) {
-    ADC* adc = nullptr;
-    try {
-        adc = new ADC(uid);
-    } catch (const std::exception &ex) {
-        logMessage("Error during ADC initialization: %s\n", ex.what());
-        delete adc;
-        throw;
-    }
-    return adc;
-}
+
+/*Create functions*/
+//implemented in sensors classes...
+
+/*General functions*/
 
 void configSensor(BaseSensor *sensor, const std::string &config) {
     try {

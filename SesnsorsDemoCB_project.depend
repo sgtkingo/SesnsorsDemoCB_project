@@ -215,18 +215,19 @@
 	<string.h>
 	"parser.hpp"
 
-1740059952 source:h:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\sensors.cpp
+1740061976 source:h:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\sensors.cpp
 	"sensors.hpp"
 	<stdexcept>
 
-1740059968 h:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\sensors.hpp
+1740062655 h:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\sensors.hpp
 	"logs.hpp"
 	"exceptions.hpp"
 	<string>
 	<cstdio>
+	<type_traits>
 	<unordered_map>
 	<map>
 
-1740059976 source:h:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\program.cpp
+1740062500 source:h:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\program.cpp
 	"libs/sensors.hpp"
 

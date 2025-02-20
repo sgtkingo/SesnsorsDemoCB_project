@@ -33,7 +33,35 @@
  * @param key The key to search for.
  * @return The value corresponding to the key, if exist.
  */
-std::string getValueFromKeyValueLikeString(std::string str, std::string key);
+std::string getValueFromKeyValueLikeString(std::string str, std::string key, char separator);
+
+/**
+ * @brief Convert string to type.
+ * 
+ * This function converts a string to a specified type.
+ * 
+ * @param str The string value to convert.
+ * @return The converted value or default value.
+ */
+template <typename T>
+T convertStringToType(const std::string &str) {
+    if (str.empty()) {
+        return T();
+    }
+    
+    if constexpr (std::is_same_v<T, int>) {
+        return std::stoi(str);
+    } else if constexpr (std::is_same_v<T, double>) {
+        return std::stod(str);
+    } else if constexpr (std::is_same_v<T, float>) {
+        return std::stof(str);
+    } else if constexpr (std::is_same_v<T, std::string>) {
+        return str;
+    } else {
+        throw std::invalid_argument("Unsupported type conversion");
+    }
+}
+
 
 /**
  * @enum SensorStatus
@@ -132,6 +160,80 @@ public:
     virtual ~BaseSensor() {}
 
     /**
+     * @brief Get value from configuration.
+     * 
+     * This function retrieves the value of a configuration parameter by key.
+     * 
+     * @param key The key of the configuration parameter.
+     * @return The value of the configuration parameter.
+     */
+    template <typename T>
+    T getConfig(const std::string &key) {
+        std::string value;
+        if (Configs.find(key) != Configs.end()) {
+            value = Configs[key].Value;
+        }
+        if(value.empty()) {
+            throw ConfigurationNotFoundException("BaseSensor::getConfig", "Configuration not found for key: " + key);
+        }
+        
+        try
+        {
+            return convertStringToType<T>(value);
+        }
+        catch(const std::exception& e)
+        {
+            throw InvalidDataTypeException("BaseSensor::getConfig", e.what());
+        }       
+    }
+
+    /**
+     * @brief Get value from sensor.
+     * 
+     * This function retrieves the value of a sensor parameter by key.
+     * 
+     * @param key The key of the sensor parameter.
+     * @return The value of the sensor parameter.
+     */
+    template <typename T>
+    T getValue(const std::string &key) {
+        std::string value;
+        if (Values.find(key) != Values.end()) {
+            value = Values[key].Value;
+        }
+        if(value.empty()) {
+            throw ValueNotFoundException("BaseSensor::getValue", "Value not found for key: " + key);
+        }
+        
+        try
+        {
+            return convertStringToType<T>(value);
+        }
+        catch(const std::exception& e)
+        {
+            throw InvalidDataTypeException("BaseSensor::getValue", e.what());
+        } 
+    }
+
+    /**
+     * @brief Get units of sensor parameter.
+     * 
+     * This function retrieves the units of a sensor parameter by key.
+     * 
+     * @param key The key of the sensor parameter.
+     * @return The units of the sensor parameter.
+     */
+    std::string getUnits(const std::string &key) {
+        if (Values.find(key) != Values.end()) {
+            return Values[key].Unit;
+        }
+        if (Configs.find(key) != Configs.end()) {
+            return Configs[key].Unit;
+        }
+        return "";
+    }
+
+    /**
      * @brief Get basic communication header.
      * 
      * @return  The basic communication header.
@@ -217,7 +319,7 @@ public:
         std::string value;
         // Parse the config string and update the sensor configs.
         for (auto &c : Configs) {
-            value = getValueFromKeyValueLikeString(cfg, c.first);
+            value = getValueFromKeyValueLikeString(cfg, c.first, '&');
             if(!value.empty()) {
                 c.second.Value = value;
             }
@@ -258,7 +360,7 @@ public:
         std::string value;
         // Parse the update string and update the sensor values.
         for (auto &c : Values) {
-            value = getValueFromKeyValueLikeString(upd, c.first);
+            value = getValueFromKeyValueLikeString(upd, c.first, '&');
             if(!value.empty()) {
                 c.second.Value = value;
             }
@@ -343,28 +445,6 @@ public:
     virtual ~ADC() {}
 
     /**
-     * @brief Factory function to create an ADC sensor.
-     * 
-     * This function creates an ADC sensor object with the given UID and returns a pointer to it.
-     * If initialization fails, it logs the error, deletes the partially constructed object, and rethrows the exception.
-     * 
-     * @param uid The unique sensor identifier.
-     * @return Pointer to the newly created ADC sensor.
-     * @throws std::exception if sensor initialization fails.
-     */
-    static ADC* create(int uid) {
-        ADC *sensor = nullptr;
-        try {
-            sensor = new ADC(uid);
-        } catch (const std::exception &ex) {
-            logMessage("Error during sensor initialization: %s\n", ex.what());
-            delete sensor;
-            throw;
-        }
-        return sensor;
-    }
-
-    /**
      * @brief Initializes the sensor.
      * 
      * Additional initialization code can be added here.
@@ -432,27 +512,6 @@ class TH : public BaseSensor {
          */
         virtual ~TH() {}
 
-        /**
-         * @brief Factory function to create an TH sensor.
-         * 
-         * This function creates an TH sensor object with the given UID and returns a pointer to it.
-         * If initialization fails, it logs the error, deletes the partially constructed object, and rethrows the exception.
-         * 
-         * @param uid The unique sensor identifier.
-         * @return Pointer to the newly created TH sensor.
-         * @throws std::exception if sensor initialization fails.
-         */
-        static TH* create(int uid) {
-            TH *sensor = nullptr;
-            try {
-                sensor = new TH(uid);
-            } catch (const std::exception &ex) {
-                logMessage("Error during sensor initialization: %s\n", ex.what());
-                delete sensor;
-                throw;
-            }
-            return sensor;
-        }
     
         /**
          * @brief Initializes the sensor.
@@ -505,7 +564,35 @@ class TH : public BaseSensor {
 /**************************************************************************/
 // CREATE FUNCTIONS
 /**************************************************************************/
-//implemented in sensors classes...
+
+/**
+ * @brief Factory function template to create a sensor of type T.
+ * 
+ * This function creates a sensor object of type T (which must have a constructor taking an int)
+ * and returns a pointer to the newly created object. If initialization fails, it logs the error,
+ * deletes the partially constructed object, and rethrows the exception.
+ * 
+ * @tparam T The sensor type, which must be derived from BaseSensor.
+ * @param uid The unique sensor identifier.
+ * @return T* Pointer to the newly created sensor.
+ * @throws std::exception if sensor initialization fails.
+ */
+template<typename T>
+T* createSensor(int uid) {
+    static_assert(std::is_base_of<BaseSensor, T>::value, "T must be derived from BaseSensor");
+    
+    T* sensor = nullptr;
+    try {
+        sensor = new T(uid);
+    } catch (const std::exception &ex) {
+        logMessage("Error during sensor initialization: %s\n", ex.what());
+        delete sensor;
+        throw SensorInitializationFailException("createSensor", "Error during sensor initialization.", new Exception(ex));
+    }
+
+    logMessage("Sensor [%d]:%s created successfully.\n", sensor->UID, sensor->Type.c_str());
+    return sensor;
+}
 
  /**************************************************************************/
 // GENERAL FUNCTIONS

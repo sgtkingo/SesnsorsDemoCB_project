@@ -17,13 +17,12 @@
 
 /*Global functions*/
 
-
-std::string getValueFromKeyValueLikeString(std::string str, std::string key) {
+std::string getValueFromKeyValueLikeString(std::string str, std::string key, char separator = '&') {
     std::string value;
     size_t pos = str.find(key);
     if(pos != std::string::npos) {
         pos += key.length() + 1;
-        size_t end = str.find("&", pos);
+        size_t end = str.find(separator, pos);
         value = str.substr(pos, end - pos);
     }
 
@@ -32,7 +31,7 @@ std::string getValueFromKeyValueLikeString(std::string str, std::string key) {
 
 
 /*Create functions*/
-//implemented in sensors classes...
+//implemented in header file as generic function
 
 /*General functions*/
 

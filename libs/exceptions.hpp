@@ -39,6 +39,19 @@ public:
     /**
      * @brief Constructs a new Exception object.
      * 
+     * @param ex Pointer to a std::exception object.
+     */
+    Exception(std::exception ex)
+    {
+        Code = NOT_DEFINED_ERROR;
+        Message = ex.what();
+        Source = "std::exception";
+        innerException = nullptr;
+    }
+
+    /**
+     * @brief Constructs a new Exception object.
+     * 
      * @param source The source of the exception.
      * @param message The descriptive message.
      * @param code (Optional) The error code.
@@ -122,6 +135,29 @@ public:
     InvalidValueException(const std::string &message, int code = ERROR_CODE) : Exception(message, code) {};
     InvalidValueException(const std::string &source, const std::string &message, int code = ERROR_CODE) : Exception(source, message, code) {};
     ~InvalidValueException(){};
+};
+
+class InvalidDataTypeException : public Exception
+{
+private:
+    /* data */
+public:
+    InvalidDataTypeException(const std::string &message, int code = CRTICAL_ERROR_CODE) : Exception(message, code) {};
+    InvalidDataTypeException(const std::string &source, const std::string &message, int code = CRTICAL_ERROR_CODE) : Exception(source, message, code) {};
+    InvalidDataTypeException(const std::string &source, const std::string &message, Exception *innerException) : Exception(source, message, CRTICAL_ERROR_CODE,innerException) {};
+    //InvalidDataTypeException(const std::string &source, const std::string &message, Exception *innerException, int code = CRTICAL_ERROR_CODE) : Exception(source, message, code, innerException) {};
+    ~InvalidDataTypeException(){};
+};
+
+class SensorInitializationFailException : public Exception
+{
+private:
+    /* data */
+public:
+    SensorInitializationFailException(const std::string &message, int code = CRTICAL_ERROR_CODE) : Exception(message, code) {};
+    SensorInitializationFailException(const std::string &source, const std::string &message, int code = CRTICAL_ERROR_CODE) : Exception(source, message, code) {};
+    SensorInitializationFailException(const std::string &source, const std::string &message, Exception *innerException, int code = CRTICAL_ERROR_CODE) : Exception(source, message, code, innerException) {};
+    ~SensorInitializationFailException(){};
 };
 
 

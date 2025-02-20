@@ -184,7 +184,7 @@
 1739896549 source:h:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\exceptions.cpp
 	"exceptions.hpp"
 
-1739952838 h:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\exceptions.hpp
+1740075364 h:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\exceptions.hpp
 	"logs.hpp"
 	"error_codes.hpp"
 	<stdexcept>
@@ -215,11 +215,11 @@
 	<string.h>
 	"parser.hpp"
 
-1740061976 source:h:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\sensors.cpp
+1740074145 source:h:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\sensors.cpp
 	"sensors.hpp"
 	<stdexcept>
 
-1740062655 h:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\sensors.hpp
+1740075238 h:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\sensors.hpp
 	"logs.hpp"
 	"exceptions.hpp"
 	<string>
@@ -228,6 +228,6 @@
 	<unordered_map>
 	<map>
 
-1740062500 source:h:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\program.cpp
+1740074604 source:h:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\program.cpp
 	"libs/sensors.hpp"
 

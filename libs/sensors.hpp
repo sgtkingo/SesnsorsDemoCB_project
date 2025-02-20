@@ -20,6 +20,19 @@
 
 #include <string>
 #include <cstdio>           ///< For sscanf
+#include <unordered_map>
+#include <map>
+
+/**
+ * @brief Get value from update string.
+ * 
+ * This function extracts the value of a given key from an update string.
+ * 
+ * @param update The update string.
+ * @param key The key to search for.
+ * @return The value corresponding to the key, if exist.
+ */
+std::string getValueFromKeyValueLikeString(std::string str, std::string key);
 
 /**
  * @enum SensorStatus
@@ -33,6 +46,33 @@ enum SensorStatus {
     OK = 0,       ///< Sensor operating normally.
     ERROR = -1,   ///< Sensor has an error.
     OFFLINE = 1   ///< Sensor is offline.
+};
+
+/**
+ * @enum DataType
+ * @brief Enumeration representing possible parametrs data types.
+ *
+ * - INT: int.
+ * - DOUBLE: double.
+ * - STRING: string.
+ */
+enum class DataType {
+    INT,
+    DOUBLE,
+    STRING
+};
+
+/**
+ * @struct SensorParam
+ * @brief Structure for sensor parameters.
+ * 
+ * This structure can be used to store sensor parameters for configuration and updating.
+ */
+struct SensorParam
+{
+    std::string Value;  ///< Parameter value.
+    std::string Unit;   ///< Parameter unit.
+    DataType DataType; ///< Parameter data type.
 };
 
 /**
@@ -51,6 +91,31 @@ public:
     std::string Description;///< Description of the sensor.
     Exception *Error;       ///< Pointer to an exception object (if any).
 
+    std::unordered_map<std::string, SensorParam> Values; ///< Sensor values.
+    std::map<std::string, SensorParam> Configs;          ///< Sensor configurations.
+
+    bool redrawPenging = true;    ///< Flag to indicate if sensor needs to be redrawn.
+
+    /**
+     * @brief Equality operator for comparing sensors by UID.
+     * 
+     * @param sensor The sensor to compare with.
+     * @return true if the sensors have the same UID, false otherwise.
+     */
+    bool operator==(const BaseSensor &sensor) const {
+        return UID == sensor.UID;
+    }
+
+    /**
+     * @brief Equality operator for comparing sensors by UID.
+     * 
+     * @param uid The UID to compare with.
+     * @return true if the sensor's UID matches the given UID, false otherwise.
+     */
+    bool operator==(const int uid) const {
+        return UID == uid;
+    }
+
     /**
      * @brief Constructs a new BaseSensor object.
      * 
@@ -64,22 +129,15 @@ public:
     virtual ~BaseSensor() {}
 
     /**
-     * @brief Prints basic sensor information.
+     * @brief Get basic communication header.
+     * 
+     * @return  The basic communication header.
      */
-    void printBasicInfo() const {
-        logMessage("Sensor UID: %d\n", UID);
-        logMessage("\tSensor Type: %s\n", Type.c_str());
-        logMessage("\tSensor Description: %s\n", Description.c_str());
-        logMessage("\tSensor Status: %d\n", Status);
-        if (Error) {
-            logMessage("\tSensor Error: %s\n", Error->Message.c_str());
-        }
-        else{
-            logMessage("\tSensor Error: None\n");
-        }
+    std::string getBasicComHeader() {
+        return "?type=" + Type + "&id=" + std::to_string(UID);
     }
 
-        /**
+    /**
      * @brief Set exception as error and change status accordingly.
      * 
      * @param error The exception as error.
@@ -100,19 +158,91 @@ public:
     }
 
     /**
-     * @brief Initializes the sensor.
+     * @brief Get error message.
      * 
-     * @throws std::runtime_error if initialization fails.
+     * @return The error message.
      */
-    virtual void initSensor() = 0;
+    std::string getError() const {
+        if(Error) {
+            return Error->Message;
+        }
+        return "No error";
+    }
 
     /**
-     * @brief Configures the sensor based on a configuration string.
+     * @brief Configures the sensor with the given configuration string.
      * 
      * @param config The configuration string.
      * @throws Exception if configuration fails.
      */
-    virtual void configSensor(const std::string &config) = 0;
+    void addConfigParameter(const std::string &key, const SensorParam &param) {
+        try
+        {
+            Configs[key] = param;
+        }
+        catch(const std::exception& e)
+        {
+            throw InvalidConfigurationException("BaseSensor::addConfigParameter", e.what());
+        }
+    }
+
+    /**
+     * @brief Get configures of the sensor as configuration string.
+     * 
+     * @throws Exception if configuration fails.
+     * @return The configuration string.
+     */
+    virtual void config()
+    {
+        std::string config = getBasicComHeader();
+        for (auto &c : Configs) {
+            config += "&" + c.first + "=" + c.second.Value;
+        }
+        
+        //Send config changes to real sensor
+        //TODO: Implement sending config changes to real sensor
+    }
+
+    /**
+     * @brief Configures the sensor with the given configuration string.
+     * 
+     * @param config The configuration string.
+     * @throws Exception if configuration fails.
+     */
+    virtual void config(const std::string &cfg)
+    {
+        std::string value;
+        // Parse the config string and update the sensor configs.
+        for (auto &c : Configs) {
+            value = getValueFromKeyValueLikeString(cfg, c.first);
+            if(!value.empty()) {
+                c.second.Value = value;
+            }
+        }
+        if(value.empty()) {
+            throw ConfigurationNotFoundException("BaseSensor::config", "No configuration found in config string!");
+        }
+
+        config();
+        redrawPenging = true; // Set flag to redraw sensor - values updated.
+    }
+
+    /**
+     * @brief Update sensor with new data.
+     * 
+     * @param update The update string containing new sensor data.
+     * @throws Exception if update fails.
+     */
+    void addValueParameter(const std::string &key, const SensorParam &param) {
+        try
+        {
+            Values[key] = param;
+        }
+        catch(const std::exception& e)
+        {
+            throw InvalidValueException("BaseSensor::addValueParameter", e.what());
+        }
+    }
 
     /**
      * @brief Updates the sensor with new data.
@@ -120,15 +250,64 @@ public:
      * @param update The update string containing new sensor data.
      * @throws Exception if update fails.
      */
-    virtual void updateSensor(const std::string &update) = 0;
+    virtual void update(const std::string &upd)
+    {
+        std::string value;
+        // Parse the update string and update the sensor values.
+        for (auto &c : Values) {
+            value = getValueFromKeyValueLikeString(upd, c.first);
+            if(!value.empty()) {
+                c.second.Value = value;
+            }
+        }
+
+        if(value.empty()) {
+            throw ValueNotFoundException("BaseSensor::update", "No value found in update string!");
+        }
+
+        redrawPenging = true; // Set flag to redraw sensor - values updated.
+    }
 
     /**
      * @brief Prints sensor information.
-     * 
-     * This function should be overridden by derived classes to print sensor-specific details.
-     * @throws Exception if printing fails.
+     * @throws Exception if print fails.
      */
-    virtual void printSensor() = 0;
+    void print() const {
+        try
+        {
+            logMessage("Sensor UID: %d\n", UID);
+            logMessage("\tSensor Type: %s\n", Type.c_str());
+            logMessage("\tSensor Description: %s\n", Description.c_str());
+            logMessage("\tSensor Status: %d\n", Status);
+            logMessage("\tSensor Error: %s\n", getError().c_str());
+            logMessage("\tSensor Configurations:\n");
+            for (auto &c : Configs) {
+                logMessage("\t\t%s: %s\n", c.first.c_str(), c.second.Value.c_str());
+            }
+            logMessage("\tSensor Values:\n");
+            for (auto &v : Values) {
+                logMessage("\t\t%s: %s\n", v.first.c_str(), v.second.Value.c_str());
+            }
+        }
+        catch(const std::exception& e)
+        {
+            throw;
+        }
+    }
+
+    /**
+     * @brief Initializes the sensor.
+     * 
+     * @throws Exception if initialization fails.
+     */
+    virtual void init() = 0;
+
+    /**
+     * @brief Draw sensor.
+     * 
+     * This function should be overridden by derived classes to draw sensor-specific details.
+     */
+    virtual void draw() = 0;
 };
 
 /**************************************************************************/
@@ -144,9 +323,6 @@ public:
  */
 class ADC : public BaseSensor {
 public:
-    float Value;      ///< Measured ADC value.
-    int Resolution;   ///< ADC resolution (e.g. 8, 10, or 12).
-
     /**
      * @brief Constructs a new ADC object.
      * 
@@ -154,8 +330,8 @@ public:
      * 
      * @param uid The unique sensor identifier.
      */
-    ADC(int uid) : BaseSensor(uid), Value(0.0f), Resolution(12) {
-        initSensor();
+    ADC(int uid) : BaseSensor(uid){
+        init();
     }
 
     /**
@@ -168,69 +344,40 @@ public:
      * 
      * Additional ADC initialization code can be added here.
      * 
-     * @throws std::runtime_error if initialization fails.
+     * @throws Exception if initialization fails.
      */
-    virtual void initSensor() override {
+    virtual void init() override {
         // Additional initialization for ADC can be added here.
         Type = "ADC";
         Description = "Analog to Digital Converter";
         Error = nullptr;
-    }
 
-    /**
-     * @brief Configures the ADC sensor using a configuration string.
-     * 
-     * Expected format: "Resolution=<value>".
-     * 
-     * @param config The configuration string.
-     * @throws Exception if configuration is missing or invalid.
-     */
-    virtual void configSensor(const std::string &config) override {
-        int resolution = VALUE_ERROR;
-        int scanStatus = sscanf(config.c_str(), "Resolution=%d", &resolution);
-        if (scanStatus == 1) {
-            if (resolution != 8 && resolution != 10 && resolution != 12) {
-                throw InvalidConfigurationException("configADC", "Resolution must be 8, 10 or 12!");
-            }
+        try
+        {
+            // Default configs
+            addConfigParameter("Resolution", {"12", "bits", DataType::INT});
+            // Default values
+            addValueParameter("Value", {"0", "", DataType::INT});
         }
-
-        //Clear error
-        setError(nullptr);
-        Resolution = resolution;
-    }
-
-    /**
-     * @brief Updates the ADC sensor with new measurement data.
-     * 
-     * Expected format: "Value=<value>".
-     * 
-     * @param update The update string.
-     * @throws InvalidValueException if value is missing or invalid.
-     */
-    virtual void updateSensor(const std::string &update) override {
-        float value = VALUE_ERROR;
-        int scanStatus = sscanf(update.c_str(), "Value=%f", &value);
-        if (scanStatus == 1) {
-            if (value == static_cast<float>(VALUE_ERROR) && value < 0) {
-                throw InvalidValueException("updateADC", "Value is not valid!");
-            }
+        catch(const std::exception& e)
+        {
+            throw;
         }
-
-        //Clear error
-        setError(nullptr);
-        Value = value;
     }
 
     /**
-     * @brief Prints the ADC sensor's information.
+     * @brief Draw ADC sensor.
      * 
-     * First prints basic sensor info using BaseSensor::printBasicInfo(), then prints ADC-specific details.
-     * 
+     * This function draws the ADC sensor.
      */
-    virtual void printSensor() override {
-        printBasicInfo();
-        logMessage("\tValue: %.2f\n", Value);
-        logMessage("\tResolution: %d\n", Resolution);
+    virtual void draw() override {
+        // Draw ADC sensor
+
+        // Call draw function here
+        //TODO: Implement draw function
+
+        
+        redrawPenging = false; // Reset flag to redraw sensor.
     }
 };
 
@@ -288,4 +435,4 @@ void updateSensor(BaseSensor *sensor, const std::string &update);
  */
 void printSensor(BaseSensor *sensor);
 
-#endif // SENSORS_HPP
+#endif //SENSORS_HPP

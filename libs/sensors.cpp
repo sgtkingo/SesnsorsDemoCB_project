@@ -15,6 +15,18 @@
 #include "sensors.hpp"
 #include <stdexcept>
 
+std::string getValueFromKeyValueLikeString(std::string str, std::string key) {
+    std::string value;
+    size_t pos = str.find(key);
+    if(pos != std::string::npos) {
+        pos += key.length() + 1;
+        size_t end = str.find("&", pos);
+        value = str.substr(pos, end - pos);
+    }
+
+    return value;
+}
+
 ADC* createADC(int uid) {
     ADC* adc = nullptr;
     try {
@@ -29,16 +41,17 @@ ADC* createADC(int uid) {
 
 void configSensor(BaseSensor *sensor, const std::string &config) {
     try {
-        sensor->configSensor(config);
+        sensor->config(config);
     } catch (const Exception &ex) {
         ex.print();
         sensor->setError(new Exception(ex));
     }
 }
 
+
 void updateSensor(BaseSensor *sensor, const std::string &update) {
     try {
-        sensor->updateSensor(update);
+        sensor->update(update);
     } catch (const Exception &ex) {
         ex.print();
         sensor->setError(new Exception(ex));
@@ -47,7 +60,7 @@ void updateSensor(BaseSensor *sensor, const std::string &update) {
 
 void printSensor(BaseSensor *sensor) {
     try {
-        sensor->printSensor();
+        sensor->print();
     } catch (const Exception &ex) {
         ex.print();
         sensor->setError(new Exception(ex));

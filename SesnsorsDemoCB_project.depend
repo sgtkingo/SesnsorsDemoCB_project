@@ -181,3 +181,52 @@
 
 1739952663 c:\users\jirka\onedrive - vsb-tuo\dokumenty\code\sesnsorsdemocb_project\libs\error_codes.hpp
 
+1739896549 source:h:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\exceptions.cpp
+	"exceptions.hpp"
+
+1739952838 h:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\exceptions.hpp
+	"logs.hpp"
+	"error_codes.hpp"
+	<stdexcept>
+
+1739904258 h:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\logs.hpp
+	"config.hpp"
+
+1739954524 h:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\config.hpp
+
+1739952663 h:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\error_codes.hpp
+
+1739954090 source:h:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\logs.cpp
+	"logs.hpp"
+	<cstdarg>
+	<cstdio>
+	<string>
+	<Arduino.h>
+	<stdio.h>
+
+1739892012 source:h:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\manager.cpp
+	<stdio.h>
+	"parser.hpp"
+
+1739892118 h:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\parser.hpp
+
+1739892099 source:h:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\parser.cpp
+	<stdio.h>
+	<string.h>
+	"parser.hpp"
+
+1740059952 source:h:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\sensors.cpp
+	"sensors.hpp"
+	<stdexcept>
+
+1740059968 h:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\sensors.hpp
+	"logs.hpp"
+	"exceptions.hpp"
+	<string>
+	<cstdio>
+	<unordered_map>
+	<map>
+
+1740059976 source:h:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\program.cpp
+	"libs/sensors.hpp"
+

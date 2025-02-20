@@ -1,0 +1,183 @@
+# depslib dependency file v1.0
+1734082154 source:d:\code\c\sesnsorsdemocb_project\libs\manager.c
+	<stdio.h>
+	"parser.h"
+
+1736769830 d:\code\c\sesnsorsdemocb_project\libs\parser.h
+
+1736769985 source:d:\code\c\sesnsorsdemocb_project\libs\parser.c
+	<stdio.h>
+	<string.h>
+	"parser.h"
+
+1739623818 source:d:\code\c\sesnsorsdemocb_project\program.c
+	<stdio.h>
+	"libs/exceptions.h"
+
+1739624329 d:\code\c\sesnsorsdemocb_project\libs\exceptions.h
+	"logs.h"
+
+1739624325 source:d:\code\c\sesnsorsdemocb_project\libs\exceptions.c
+	"exceptions.h"
+	<stdlib.h>
+	<string.h>
+
+1739624298 source:d:\code\c\sesnsorsdemocb_project\libs\sensors.c
+	"sensors.h"
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+
+1739623881 d:\code\c\sesnsorsdemocb_project\libs\sensors.h
+	"exceptions.h"
+	"logs.h"
+
+1739624287 source:d:\code\c\sesnsorsdemocb_project\libs\logs.c
+	"logs.h"
+	<stdarg.h>
+	<Arduino.h>
+	<stdio.h>
+
+1739624283 d:\code\c\sesnsorsdemocb_project\libs\logs.h
+	"config.h"
+
+1739624125 d:\code\c\sesnsorsdemocb_project\libs\config.h
+
+1739789695 source:g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\exceptions.c
+	"exceptions.h"
+	<stdlib.h>
+	<string.h>
+
+1739789593 g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\exceptions.h
+	"logs.h"
+
+1739781257 g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\logs.h
+	"config.h"
+
+1739790001 g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\config.h
+
+1739790272 source:g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\logs.c
+	"logs.h"
+	<stdarg.h>
+	<Arduino.h>
+	<stdio.h>
+
+1734082154 source:g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\manager.c
+	<stdio.h>
+	"parser.h"
+
+1739789810 g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\parser.h
+
+1739789800 source:g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\parser.c
+	<stdio.h>
+	<string.h>
+	"parser.h"
+
+1739789689 source:g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\sensors.c
+	"sensors.h"
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+
+1739789735 g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\sensors.h
+	"exceptions.h"
+	"logs.h"
+
+1739790547 source:g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\program.c
+	<stdio.h>
+	"libs/sensors.h"
+
+1739789695 source:c:\users\jirka\onedrive - vsb-tuo\dokumenty\code\sesnsorsdemocb_project\libs\exceptions.c
+	"exceptions.h"
+	<stdlib.h>
+	<string.h>
+
+1739789593 c:\users\jirka\onedrive - vsb-tuo\dokumenty\code\sesnsorsdemocb_project\libs\exceptions.h
+	"logs.h"
+
+1739781257 c:\users\jirka\onedrive - vsb-tuo\dokumenty\code\sesnsorsdemocb_project\libs\logs.h
+	"config.h"
+
+1739790001 c:\users\jirka\onedrive - vsb-tuo\dokumenty\code\sesnsorsdemocb_project\libs\config.h
+
+1739790272 source:c:\users\jirka\onedrive - vsb-tuo\dokumenty\code\sesnsorsdemocb_project\libs\logs.c
+	"logs.h"
+	<stdarg.h>
+	<Arduino.h>
+	<stdio.h>
+
+1734082154 source:c:\users\jirka\onedrive - vsb-tuo\dokumenty\code\sesnsorsdemocb_project\libs\manager.c
+	<stdio.h>
+	"parser.h"
+
+1739789810 c:\users\jirka\onedrive - vsb-tuo\dokumenty\code\sesnsorsdemocb_project\libs\parser.h
+
+1739789800 source:c:\users\jirka\onedrive - vsb-tuo\dokumenty\code\sesnsorsdemocb_project\libs\parser.c
+	<stdio.h>
+	<string.h>
+	"parser.h"
+
+1739798727 source:c:\users\jirka\onedrive - vsb-tuo\dokumenty\code\sesnsorsdemocb_project\libs\sensors.c
+	"sensors.h"
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+
+1739798170 c:\users\jirka\onedrive - vsb-tuo\dokumenty\code\sesnsorsdemocb_project\libs\sensors.h
+	"exceptions.h"
+	"logs.h"
+
+1739797538 source:c:\users\jirka\onedrive - vsb-tuo\dokumenty\code\sesnsorsdemocb_project\program.c
+	<stdio.h>
+	"libs/sensors.h"
+
+1739896549 source:c:\users\jirka\onedrive - vsb-tuo\dokumenty\code\sesnsorsdemocb_project\libs\exceptions.cpp
+	"exceptions.hpp"
+
+1739954090 source:c:\users\jirka\onedrive - vsb-tuo\dokumenty\code\sesnsorsdemocb_project\libs\logs.cpp
+	"logs.hpp"
+	<cstdarg>
+	<cstdio>
+	<string>
+	<Arduino.h>
+	<stdio.h>
+
+1739904258 c:\users\jirka\onedrive - vsb-tuo\dokumenty\code\sesnsorsdemocb_project\libs\logs.hpp
+	"config.hpp"
+
+1739954524 c:\users\jirka\onedrive - vsb-tuo\dokumenty\code\sesnsorsdemocb_project\libs\config.hpp
+
+1739892012 source:c:\users\jirka\onedrive - vsb-tuo\dokumenty\code\sesnsorsdemocb_project\libs\manager.cpp
+	<stdio.h>
+	"parser.hpp"
+
+1739892118 c:\users\jirka\onedrive - vsb-tuo\dokumenty\code\sesnsorsdemocb_project\libs\parser.hpp
+
+1739892099 source:c:\users\jirka\onedrive - vsb-tuo\dokumenty\code\sesnsorsdemocb_project\libs\parser.cpp
+	<stdio.h>
+	<string.h>
+	"parser.hpp"
+
+1739952893 source:c:\users\jirka\onedrive - vsb-tuo\dokumenty\code\sesnsorsdemocb_project\libs\sensors.cpp
+	"sensors.hpp"
+	<stdexcept>
+
+1739954046 c:\users\jirka\onedrive - vsb-tuo\dokumenty\code\sesnsorsdemocb_project\libs\sensors.hpp
+	"logs.hpp"
+	"exceptions.hpp"
+	<string>
+	<cstdio>
+
+1739952838 c:\users\jirka\onedrive - vsb-tuo\dokumenty\code\sesnsorsdemocb_project\libs\exceptions.hpp
+	"logs.hpp"
+	"error_codes.hpp"
+	<stdexcept>
+
+1739969516 source:c:\users\jirka\onedrive - vsb-tuo\dokumenty\code\sesnsorsdemocb_project\program.cpp
+	<stdio.h>
+	<string>
+	<cstdio>
+	<unordered_map>
+
+1739952663 c:\users\jirka\onedrive - vsb-tuo\dokumenty\code\sesnsorsdemocb_project\libs\error_codes.hpp
+

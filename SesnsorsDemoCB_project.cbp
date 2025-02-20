@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="SesnsorsDemoCB_project" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/SesnsorsDemoCB_project" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/SesnsorsDemoCB_project" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="libs/config.hpp" />
+		<Unit filename="libs/exceptions.cpp" />
+		<Unit filename="libs/exceptions.hpp" />
+		<Unit filename="libs/logs.cpp" />
+		<Unit filename="libs/logs.hpp" />
+		<Unit filename="libs/manager.cpp" />
+		<Unit filename="libs/manager.hpp" />
+		<Unit filename="libs/parser.cpp" />
+		<Unit filename="libs/parser.hpp" />
+		<Unit filename="libs/sensors.cpp" />
+		<Unit filename="libs/sensors.hpp" />
+		<Unit filename="program.cpp" />
+		<Extensions>
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

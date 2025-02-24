@@ -231,3 +231,53 @@
 1740074604 source:h:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\program.cpp
 	"libs/sensors.hpp"
 
+1739896549 source:g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\exceptions.cpp
+	"exceptions.hpp"
+
+1740076612 g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\exceptions.hpp
+	"logs.hpp"
+	"error_codes.hpp"
+	<stdexcept>
+
+1739904258 g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\logs.hpp
+	"config.hpp"
+
+1739954524 g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\config.hpp
+
+1739952663 g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\error_codes.hpp
+
+1739954090 source:g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\logs.cpp
+	"logs.hpp"
+	<cstdarg>
+	<cstdio>
+	<string>
+	<Arduino.h>
+	<stdio.h>
+
+1739892012 source:g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\manager.cpp
+	<stdio.h>
+	"parser.hpp"
+
+1739892118 g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\parser.hpp
+
+1739892099 source:g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\parser.cpp
+	<stdio.h>
+	<string.h>
+	"parser.hpp"
+
+1740074157 source:g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\sensors.cpp
+	"sensors.hpp"
+	<stdexcept>
+
+1740404409 g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\sensors.hpp
+	"logs.hpp"
+	"exceptions.hpp"
+	<string>
+	<cstdio>
+	<type_traits>
+	<unordered_map>
+	<map>
+
+1740404197 source:g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\program.cpp
+	"libs/sensors.hpp"
+

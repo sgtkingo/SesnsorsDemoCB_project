@@ -152,12 +152,18 @@ public:
      * 
      * @param uid The unique sensor identifier.
      */
-    BaseSensor(int uid) : UID(uid), Status(SensorStatus::OK) {}
+    BaseSensor(int uid) : UID(uid), Status(SensorStatus::OK) 
+    {
+        Error = nullptr;
+    }
 
     /**
      * @brief Virtual destructor.
      */
-    virtual ~BaseSensor() {}
+    virtual ~BaseSensor() 
+    {
+        delete Error;
+    }
 
     /**
      * @brief Get value from configuration.
@@ -435,7 +441,8 @@ public:
      * 
      * @param uid The unique sensor identifier.
      */
-    ADC(int uid) : BaseSensor(uid){
+    ADC(int uid) : BaseSensor(uid)
+    {
         init();
     }
 
@@ -494,6 +501,13 @@ public:
 
 /**************************************************************************/
 
+/**
+ * @class TH
+ * @brief Temperature/Huminidy sensor class derived from BaseSensor.
+ * 
+ * Represents a Temperature/Huminidy sensor. Implements initialization, configuration, updating, and printing
+ * specific to Temperature/Huminidy sensors.
+ */
 class TH : public BaseSensor {
     public:
         /**
@@ -503,7 +517,8 @@ class TH : public BaseSensor {
          * 
          * @param uid The unique sensor identifier.
          */
-        TH(int uid) : BaseSensor(uid){
+        TH(int uid) : BaseSensor(uid)
+        {
             init();
         }
     
@@ -558,7 +573,7 @@ class TH : public BaseSensor {
             
             redrawPenging = false; // Reset flag to redraw sensor.
         }
-    };
+};
 
 
 /**************************************************************************/

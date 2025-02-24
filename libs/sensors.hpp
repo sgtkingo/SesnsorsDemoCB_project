@@ -71,7 +71,7 @@ T convertStringToType(const std::string &str) {
  * - ERROR: Sensor has encountered an error.
  * - OFFLINE: Sensor is offline.
  */
-enum SensorStatus {
+enum class SensorStatus {
     OK = 0,       ///< Sensor operating normally.
     ERROR = -1,   ///< Sensor has an error.
     OFFLINE = 1   ///< Sensor is offline.
@@ -117,7 +117,7 @@ struct SensorParam
 class BaseSensor {
 public:
     int UID;                ///< Unique sensor identifier.
-    int Status;             ///< Sensor status.
+    SensorStatus Status;             ///< Sensor status.
     std::string Type;       ///< Sensor type as text.
     std::string Description;///< Description of the sensor.
     Exception *Error;       ///< Pointer to an exception object (if any).
@@ -152,7 +152,7 @@ public:
      * 
      * @param uid The unique sensor identifier.
      */
-    BaseSensor(int uid) : UID(uid), Status(OK) {}
+    BaseSensor(int uid) : UID(uid), Status(SensorStatus::OK) {}
 
     /**
      * @brief Virtual destructor.
@@ -250,14 +250,14 @@ public:
     void setError(Exception *error) {
         if (Error) {
             delete Error;
-            Status = OK;
+            Status = SensorStatus::OK;
         }
 
         Error = error;
         if(Error)
         {
             if( Error->Code != WARNING_CODE ) {
-                Status = ERROR;
+                Status = SensorStatus::ERROR;
             }
         }
     }
@@ -575,7 +575,7 @@ class TH : public BaseSensor {
  * @tparam T The sensor type, which must be derived from BaseSensor.
  * @param uid The unique sensor identifier.
  * @return T* Pointer to the newly created sensor.
- * @throws std::exception if sensor initialization fails.
+ * @throws SensorInitializationFailException if sensor initialization fails.
  */
 template<typename T>
 T* createSensor(int uid) {

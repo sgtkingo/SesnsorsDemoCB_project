@@ -145,7 +145,7 @@ public:
     InvalidDataTypeException(const std::string &message, int code = CRTICAL_ERROR_CODE) : Exception(message, code) {};
     InvalidDataTypeException(const std::string &source, const std::string &message, int code = CRTICAL_ERROR_CODE) : Exception(source, message, code) {};
     InvalidDataTypeException(const std::string &source, const std::string &message, Exception *innerException) : Exception(source, message, CRTICAL_ERROR_CODE,innerException) {};
-    //InvalidDataTypeException(const std::string &source, const std::string &message, Exception *innerException, int code = CRTICAL_ERROR_CODE) : Exception(source, message, code, innerException) {};
+    InvalidDataTypeException(const std::string &source, const std::string &message, Exception *innerException, int code = CRTICAL_ERROR_CODE) : Exception(source, message, code, innerException) {};
     ~InvalidDataTypeException(){};
 };
 

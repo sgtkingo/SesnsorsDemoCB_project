@@ -44,23 +44,23 @@ std::string getValueFromKeyValueLikeString(std::string str, std::string key, cha
  * @return The converted value or default value.
  */
 template <typename T>
-T convertStringToType(const std::string &str) {
-    if (str.empty()) {
-        return T();
-    }
-    
-    if constexpr (std::is_same_v<T, int>) {
-        return std::stoi(str);
-    } else if constexpr (std::is_same_v<T, double>) {
-        return std::stod(str);
-    } else if constexpr (std::is_same_v<T, float>) {
-        return std::stof(str);
-    } else if constexpr (std::is_same_v<T, std::string>) {
-        return str;
-    } else {
-        throw std::invalid_argument("Unsupported type conversion");
-    }
-}
+T convertStringToType(const std::string &str);
+
+// Specialization for int
+template <>
+int convertStringToType<int>(const std::string &str);
+
+// Specialization for double
+template <>
+double convertStringToType<double>(const std::string &str);
+
+// Specialization for float
+template <>
+float convertStringToType<float>(const std::string &str);
+
+// Specialization for std::string
+template <>
+std::string convertStringToType<std::string>(const std::string &str);
 
 
 /**

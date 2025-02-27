@@ -6,9 +6,8 @@
 /*********************
  *      INCLUDES
  *********************/
-#include <stdio.h>
-#include <string.h>
 #include "parser.hpp"
+#include <cstdio>
 
 /**********************
  *      TYPEDEFS
@@ -21,18 +20,20 @@
 /*********************
  *      DEFINES
  *********************/
-int check_metadata(sensor_metadata* metadata)
+int CheckMetadata(SensorMetadata* metadata)
 {
-    return metadata->sensorType != NULL && metadata->sensorID != NULL && metadata->data != NULL;
+    return metadata->ID != -1 && !metadata->Type.empty() && !metadata->Data.empty();
 }
 
-sensor_metadata parse_metadata(char* request)
+SensorMetadata ParseMetadata(std::string request)
 {
-    sensor_metadata metadata;
-
-    metadata.sensorType = strtok(request, "&");
-    metadata.sensorID = strtok(NULL, "&");
-    metadata.data = strtok(NULL, "&");
+    SensorMetadata metadata;
+    
+    /*
+    metadata.Type = strtok(request, "&");
+    metadata.ID = strtok(NULL, "&");
+    metadata.Data = strtok(NULL, "&");
+    */
 
     return metadata;
 }

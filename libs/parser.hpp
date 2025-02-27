@@ -1,20 +1,31 @@
 #ifndef __PARSER_H_
 #define __PARSER_H_
 
+/*********************
+ *      INCLUDES
+ *********************/
+#include "exceptions.hpp"
+#include "helpers.hpp"
+#include <string>
+
 /**********************
  *      TYPEDEFS
  **********************/
-typedef struct  
+struct SensorMetadata
 {
-  char* sensorType;
-  char* sensorID;
-  char* data;
-}sensor_metadata;
+  int ID;
+  std::string Type;
+  std::string Data;
+};
 
 /*********************
  *      DECLARES
  *********************/
-int check_metadata(sensor_metadata* metadata);
-sensor_metadata parse_metadata(char* request);
 
-#endif /* EVENT_CB_H_ */
+
+int CheckMetadata(SensorMetadata* metadata);
+
+
+SensorMetadata ParseMetadata(std::string request);
+
+#endif //__PARSER_H_

@@ -15,6 +15,9 @@
 #ifndef EXCEPTIONS_HPP
 #define EXCEPTIONS_HPP
 
+/*********************
+ *      INCLUDES
+ *********************/
 #include "logs.hpp"   ///< For logMessage function
 #include "error_codes.hpp"  ///< For error codes
 
@@ -31,7 +34,7 @@
  */
 class Exception : public std::exception {
 public:
-    int Code;               ///< Error code associated with the exception.
+    ErrorCode Code;               ///< Error code associated with the exception.
     std::string Message;    ///< Human-readable exception message.
     std::string Source;     ///< Origin of the exception (e.g., function or module name).
     Exception* innerException; ///< Pointer to a nested exception (if any).
@@ -43,9 +46,36 @@ public:
      */
     Exception(std::exception ex)
     {
-        Code = NOT_DEFINED_ERROR;
+        Code = ErrorCode::NOT_DEFINED_ERROR;
         Message = ex.what();
         Source = "std::exception";
+        innerException = nullptr;
+    }
+
+    /**
+     * @brief Constructs a new Exception object.
+     * 
+     * @param source The source of the exception.
+     * @param inner Pointer to a nested exception.
+     */
+    Exception(const std::string &source, Exception* inner)
+    {
+        Code = ErrorCode::NOT_DEFINED_ERROR;
+        Message = "Unknown error";
+        Source = source;
+        innerException = inner;
+    }
+
+    /**
+     * @brief Constructs a new Exception object.
+     * 
+     * @param message The descriptive message.
+     */
+    Exception(const std::string &message, ErrorCode code = ErrorCode::NOT_DEFINED_ERROR)
+    {
+        Code = code;
+        Message = message;
+        Source = "Unknown source";
         innerException = nullptr;
     }
 
@@ -57,18 +87,8 @@ public:
      * @param code (Optional) The error code.
      * @param inner (Optional) Pointer to a nested exception. Defaults to nullptr.
      */
-    Exception(const std::string &source, const std::string &message, int code = NOT_DEFINED_ERROR, Exception* inner = nullptr)
+    Exception(const std::string &source, const std::string &message, ErrorCode code = ErrorCode::NOT_DEFINED_ERROR, Exception* inner = nullptr)
     : Code(code), Message(message), Source(source), innerException(inner) {}
-
-    /**
-     * @brief Constructs a new Exception object.
-     * 
-     * @param message The descriptive message.
-     * @param code (Optional) The error code.
-     * @param inner (Optional) Pointer to a nested exception. Defaults to nullptr.
-     */
-    Exception(const std::string &message, int code = NOT_DEFINED_ERROR, Exception* inner = nullptr)
-    : Exception("non-defined source", message, code, inner) {}
 
     /**
      * @brief Destructor for the Exception object.
@@ -101,8 +121,9 @@ class ConfigurationNotFoundException : public Exception
 private:
     /* data */
 public:
-    ConfigurationNotFoundException(const std::string &message, int code = WARNING_CODE) : Exception(message, code) {};
-    ConfigurationNotFoundException(const std::string &source, const std::string &message, int code = WARNING_CODE) : Exception(source, message, code) {};
+    ConfigurationNotFoundException(const std::string &source, Exception* innerException) : Exception(source, innerException) {};
+    ConfigurationNotFoundException(const std::string &message, ErrorCode code = ErrorCode::NOT_FOUND) : Exception(message, code) {};
+    ConfigurationNotFoundException(const std::string &source, const std::string &message, ErrorCode code = ErrorCode::NOT_FOUND) : Exception(source, message, code) {};
     ~ConfigurationNotFoundException(){};
 };
 
@@ -111,8 +132,9 @@ class InvalidConfigurationException : public Exception
 private:
     /* data */
 public:
-    InvalidConfigurationException(const std::string &message, int code = ERROR_CODE) : Exception(message, code) {};
-    InvalidConfigurationException(const std::string &source, const std::string &message, int code = ERROR_CODE) : Exception(source, message, code) {};
+    InvalidConfigurationException(const std::string &source, Exception* innerException) : Exception(source, innerException) {};
+    InvalidConfigurationException(const std::string &message, ErrorCode code = ErrorCode::INVALID_VALUE) : Exception(message, code) {};
+    InvalidConfigurationException(const std::string &source, const std::string &message, ErrorCode code = ErrorCode::INVALID_VALUE) : Exception(source, message, code) {};
     ~InvalidConfigurationException(){};
 };
 
@@ -121,8 +143,9 @@ class ValueNotFoundException : public Exception
 private:
     /* data */
 public:
-    ValueNotFoundException(const std::string &message, int code = WARNING_CODE) : Exception(message, code) {};
-    ValueNotFoundException(const std::string &source, const std::string &message, int code = WARNING_CODE) : Exception(source, message, code) {};
+    ValueNotFoundException(const std::string &source, Exception* innerException) : Exception(source, innerException) {};
+    ValueNotFoundException(const std::string &message, ErrorCode code = ErrorCode::NOT_FOUND) : Exception(message, code) {};
+    ValueNotFoundException(const std::string &source, const std::string &message, ErrorCode code = ErrorCode::NOT_FOUND) : Exception(source, message, code) {};
     ~ValueNotFoundException(){};
 };
 
@@ -132,8 +155,9 @@ class InvalidValueException : public Exception
 private:
     /* data */
 public:
-    InvalidValueException(const std::string &message, int code = ERROR_CODE) : Exception(message, code) {};
-    InvalidValueException(const std::string &source, const std::string &message, int code = ERROR_CODE) : Exception(source, message, code) {};
+    InvalidValueException(const std::string &source, Exception* innerException) : Exception(source, innerException) {};
+    InvalidValueException(const std::string &message, ErrorCode code = ErrorCode::INVALID_VALUE) : Exception(message, code) {};
+    InvalidValueException(const std::string &source, const std::string &message, ErrorCode code = ErrorCode::INVALID_VALUE) : Exception(source, message, code) {};
     ~InvalidValueException(){};
 };
 
@@ -142,10 +166,10 @@ class InvalidDataTypeException : public Exception
 private:
     /* data */
 public:
-    InvalidDataTypeException(const std::string &message, int code = CRTICAL_ERROR_CODE) : Exception(message, code) {};
-    InvalidDataTypeException(const std::string &source, const std::string &message, int code = CRTICAL_ERROR_CODE) : Exception(source, message, code) {};
-    InvalidDataTypeException(const std::string &source, const std::string &message, Exception *innerException) : Exception(source, message, CRTICAL_ERROR_CODE,innerException) {};
-    InvalidDataTypeException(const std::string &source, const std::string &message, Exception *innerException, int code = CRTICAL_ERROR_CODE) : Exception(source, message, code, innerException) {};
+    InvalidDataTypeException(const std::string &source, Exception* innerException) : Exception(source, innerException) {};
+    InvalidDataTypeException(const std::string &message, ErrorCode code = ErrorCode::CRTICAL_ERROR_CODE) : Exception(message, code) {};
+    InvalidDataTypeException(const std::string &source, const std::string &message, ErrorCode code = ErrorCode::CRTICAL_ERROR_CODE) : Exception(source, message, code) {};
+    InvalidDataTypeException(const std::string &source, const std::string &message, Exception *innerException, ErrorCode code = ErrorCode::CRTICAL_ERROR_CODE) : Exception(source, message, code, innerException) {};
     ~InvalidDataTypeException(){};
 };
 
@@ -154,9 +178,10 @@ class SensorInitializationFailException : public Exception
 private:
     /* data */
 public:
-    SensorInitializationFailException(const std::string &message, int code = CRTICAL_ERROR_CODE) : Exception(message, code) {};
-    SensorInitializationFailException(const std::string &source, const std::string &message, int code = CRTICAL_ERROR_CODE) : Exception(source, message, code) {};
-    SensorInitializationFailException(const std::string &source, const std::string &message, Exception *innerException, int code = CRTICAL_ERROR_CODE) : Exception(source, message, code, innerException) {};
+    SensorInitializationFailException(const std::string &source, Exception* innerException) : Exception(source, innerException) {};
+    SensorInitializationFailException(const std::string &message, ErrorCode code = ErrorCode::CRTICAL_ERROR_CODE) : Exception(message, code) {};
+    SensorInitializationFailException(const std::string &source, const std::string &message, ErrorCode code = ErrorCode::CRTICAL_ERROR_CODE) : Exception(source, message, code) {};
+    SensorInitializationFailException(const std::string &source, const std::string &message, Exception *innerException, ErrorCode code = ErrorCode::CRTICAL_ERROR_CODE) : Exception(source, message, code, innerException) {};
     ~SensorInitializationFailException(){};
 };
 

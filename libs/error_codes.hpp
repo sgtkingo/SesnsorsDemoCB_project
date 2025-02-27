@@ -23,13 +23,15 @@
  * - **CONFIG_ERROR**: Indicates an error in sensor configuration.
  * - **UPDATE_ERROR**: Indicates an error during an update operation.
  */
-enum ErrorCode {
+enum class ErrorCode {
     VALUE_ERROR     = -1,  ///< Invalid value error.
     VALUE_NOT_FOUND =  0,  ///< Value not found.
-    WARNING_CODE    =  1,  ///< Configuration error.
-    ERROR_CODE    =  2,   ///< Update operation error.
-    CRTICAL_ERROR_CODE   =  3,   ///< Unknown error.
-    NOT_DEFINED_ERROR = 1000
+    INVALID_VALUE,        ///< Invalid value.
+    WARNING_CODE,  ///< Configuration error.
+    ERROR_CODE,   ///< Operation error.
+    CRTICAL_ERROR_CODE, ///< Critical error, stop code.
+    NOT_FOUND,   ///< Value not found.  
+    NOT_DEFINED_ERROR  ///< Unknown error.
 };
 
 #endif // ERROR_CODES_HPP

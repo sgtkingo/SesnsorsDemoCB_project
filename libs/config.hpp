@@ -14,6 +14,11 @@
 
 /// Uncomment to enable logging for Arduino-based environments
 // #define ARDUINO_H 
+#define UART1_PORT 0
+#define UART1_BAUDRATE 9600
+#define UART1_RX -1
+#define UART1_TX -1
+
 
 /// Uncomment to enable logging for standard console applications (PC/Linux)
 #define STDIO_H 

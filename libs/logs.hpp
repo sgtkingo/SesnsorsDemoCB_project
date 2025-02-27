@@ -6,6 +6,9 @@
  #ifndef LOGS_H
  #define LOGS_H
  
+ /*********************
+ *      INCLUDES
+ *********************/
  #include "config.hpp"  ///< Configuration file inclusion
  
  /**

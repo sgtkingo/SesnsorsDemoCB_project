@@ -19,6 +19,16 @@ int main() {
     updateSensor(th, "Temperature=25.5&Humidity=50");
     printSensor(th);
 
+    //How to set value to sensor
+    th->setValue("Temperature", "30.2");
+    th->setValue("Humidity", "45");
+    //How to set config to sensor
+    th->setConfig("Precision", "2");
+    printSensor(th);
+
+    //How to synchronize sensor
+    th->synchronize();
+
     //How to get certain value from sensor
     std::string tempValue = th->Values["Temperature"].Value;
     std::string tempUnit = th->Values["Temperature"].Unit;
@@ -39,13 +49,13 @@ int main() {
     double temp = th->getValue<double>("Temperature");
     int hum = th->getValue<int>("Humidity");
 
-    printf("Temperature: %f [%s]\n", temp, th->getUnits("Temperature").c_str());
-    printf("Humidity: %d [%s]\n", hum, th->getUnits("Humidity").c_str());
+    printf("Temperature: %f [%s]\n", temp, th->getValueUnits("Temperature").c_str());
+    printf("Humidity: %d [%s]\n", hum, th->getValueUnits("Humidity").c_str());
 
     //Works on configurations too
     int precision = th->getConfig<int>("Precision");
     //Get units is universal function for Configs and Values
-    std::string precisionUnit = th->getUnits("Precision");
+    std::string precisionUnit = th->getConfigUnits("Precision");
     printf("Precision: %d [%s]\n", precision, precisionUnit.c_str());
 
     //Ovewrite old sensor with new one

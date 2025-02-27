@@ -15,53 +15,16 @@
 #ifndef SENSORS_HPP
 #define SENSORS_HPP
 
+/*********************
+ *      INCLUDES
+ *********************/
 #include "logs.hpp"         ///< Logging functions.
 #include "exceptions.hpp"  ///< Exceptions.
+#include "helpers.hpp"     ///< Helper functions.
 
 #include <string>
-#include <cstdio>           ///< For sscanf
-#include <type_traits>      ///< For is_same
 #include <unordered_map>
 #include <map>
-
-/**
- * @brief Get value from update string.
- * 
- * This function extracts the value of a given key from an update string.
- * 
- * @param update The update string.
- * @param key The key to search for.
- * @return The value corresponding to the key, if exist.
- */
-std::string getValueFromKeyValueLikeString(std::string str, std::string key, char separator);
-
-/**
- * @brief Convert string to type.
- * 
- * This function converts a string to a specified type.
- * 
- * @param str The string value to convert.
- * @return The converted value or default value.
- */
-template <typename T>
-T convertStringToType(const std::string &str);
-
-// Specialization for int
-template <>
-int convertStringToType<int>(const std::string &str);
-
-// Specialization for double
-template <>
-double convertStringToType<double>(const std::string &str);
-
-// Specialization for float
-template <>
-float convertStringToType<float>(const std::string &str);
-
-// Specialization for std::string
-template <>
-std::string convertStringToType<std::string>(const std::string &str);
-
 
 /**
  * @enum SensorStatus
@@ -126,6 +89,7 @@ public:
     std::map<std::string, SensorParam> Configs;          ///< Sensor configurations.
 
     bool redrawPenging = true;    ///< Flag to indicate if sensor needs to be redrawn.
+    bool isSync = false;          ///< Flag to indicate if sensor is synchronized with real sensor.
 
     /**
      * @brief Equality operator for comparing sensors by UID.
@@ -147,6 +111,10 @@ public:
         return UID == uid;
     }
 
+    bool operator==(std::string comHeader) const {
+        return comHeader.find(getBasicComHeader()) != std::string::npos;
+    }
+
     /**
      * @brief Constructs a new BaseSensor object.
      * 
@@ -155,6 +123,9 @@ public:
     BaseSensor(int uid) : UID(uid), Status(SensorStatus::OK) 
     {
         Error = nullptr;
+
+        redrawPenging = true;
+        isSync = false;
     }
 
     /**
@@ -194,6 +165,25 @@ public:
     }
 
     /**
+     * @brief Set configuration value.
+     * 
+     * This function sets the value of a configuration parameter by key.
+     * 
+     * @param key The key of the configuration parameter.
+     * @param value The value to set.
+     */
+    void setConfig(const std::string &key, const std::string &value) {
+        if (Configs.find(key) != Configs.end()) {
+            Configs[key].Value = value;
+        }
+        else{
+            throw ConfigurationNotFoundException("BaseSensor::setConfig", "Configuration not found for key: " + key);
+        }
+
+        isSync = false; // Set flag to indicate sensor is not synchronized with real sensor.
+    }
+
+    /**
      * @brief Get value from sensor.
      * 
      * This function retrieves the value of a sensor parameter by key.
@@ -222,17 +212,48 @@ public:
     }
 
     /**
-     * @brief Get units of sensor parameter.
+     * @brief Set sensor value.
      * 
-     * This function retrieves the units of a sensor parameter by key.
+     * This function sets the value of a sensor parameter by key.
      * 
      * @param key The key of the sensor parameter.
-     * @return The units of the sensor parameter.
+     * @param value The value to set.
      */
-    std::string getUnits(const std::string &key) {
+    void setValue(const std::string &key, const std::string &value) {
+        if (Values.find(key) != Values.end()) {
+            Values[key].Value = value;
+        }
+        else{
+            throw ValueNotFoundException("BaseSensor::setValue", "Value not found for key: " + key);
+        }
+        
+        isSync = false; // Set flag to indicate sensor is not synchronized with real sensor.
+    }
+
+    /**
+     * @brief Get units of sensor value parameter.
+     * 
+     * This function retrieves the units of a sensor value parameter by key.
+     * 
+     * @param key The key of the value sensor parameter.
+     * @return The units of the value sensor parameter.
+     */
+    std::string getValueUnits(const std::string &key) {
         if (Values.find(key) != Values.end()) {
             return Values[key].Unit;
         }
+        return "";
+    }
+
+    /**
+     * @brief Get units of sensor config parameter.
+     * 
+     * This function retrieves the units of a sensor config parameter by key.
+     * 
+     * @param key The key of the sensor config parameter.
+     * @return The units of the sensor config parameter.
+     */
+    std::string getConfigUnits(const std::string &key) {
         if (Configs.find(key) != Configs.end()) {
             return Configs[key].Unit;
         }
@@ -244,7 +265,7 @@ public:
      * 
      * @return  The basic communication header.
      */
-    std::string getBasicComHeader() {
+    std::string getBasicComHeader() const {
         return "?type=" + Type + "&id=" + std::to_string(UID);
     }
 
@@ -262,7 +283,7 @@ public:
         Error = error;
         if(Error)
         {
-            if( Error->Code != WARNING_CODE ) {
+            if( Error->Code != ErrorCode::WARNING_CODE ) {
                 Status = SensorStatus::ERROR;
             }
         }
@@ -281,10 +302,10 @@ public:
     }
 
     /**
-     * @brief Configures the sensor with the given configuration string.
+     * @brief Add configuration parameter to the sensor.
      * 
-     * @param config The configuration string.
-     * @throws Exception if configuration fails.
+     * @param key The key of the configuration parameter.
+     * @param param The configuration parameter to add.
      */
     void addConfigParameter(const std::string &key, const SensorParam &param) {
         try
@@ -298,20 +319,22 @@ public:
     }
 
     /**
-     * @brief Get configures of the sensor as configuration string.
+     * @brief Synchronize configuration with the real sensor.
      * 
-     * @throws Exception if configuration fails.
-     * @return The configuration string.
+     * @throws Exception if synchronization fails.
      */
-    virtual void config()
+    virtual void synchronize()
     {
-        std::string config = getBasicComHeader();
+        std::string syncMessage = getBasicComHeader();
         for (auto &c : Configs) {
-            config += "&" + c.first + "=" + c.second.Value;
+            syncMessage += "&" + c.first + "=" + c.second.Value;
         }
         
         //Send config changes to real sensor
         //TODO: Implement sending config changes to real sensor
+        logMessage("Sync message: %s\n", syncMessage.c_str());
+
+        isSync = true;
     }
 
     /**
@@ -334,15 +357,16 @@ public:
             throw ConfigurationNotFoundException("BaseSensor::config", "No configuration found in config string!");
         }
 
-        config();
         redrawPenging = true; // Set flag to redraw sensor - values updated.
+        isSync = true; // Set flag to indicate sensor is synchronized with real sensor.
     }
 
     /**
-     * @brief Update sensor with new data.
+     * @brief Adds a value parameter to the sensor.
      * 
-     * @param update The update string containing new sensor data.
-     * @throws Exception if update fails.
+     * @param key The key of the value parameter.
+     * @param param The value parameter to add.
+     * @throws Exception if adding the value parameter fails.
      */
     void addValueParameter(const std::string &key, const SensorParam &param) {
         try
@@ -351,7 +375,7 @@ public:
         }
         catch(const std::exception& e)
         {
-            throw InvalidValueException("BaseSensor::addValueParameter", e.what());
+            throw InvalidValueException("BaseSensor::addValueParameter", new Exception(e));
         }
     }
 
@@ -621,7 +645,7 @@ T* createSensor(int uid) {
  * 
  * @param sensor Pointer to the sensor to be configured.
  * @param config The configuration string.
- * @throws Exception if the configuration fails.
+ * @throws Exceptions should be internally resolved to prevent program from crash.
  */
 void configSensor(BaseSensor *sensor, const std::string &config);
 
@@ -633,7 +657,7 @@ void configSensor(BaseSensor *sensor, const std::string &config);
  * 
  * @param sensor Pointer to the sensor to be updated.
  * @param update The update string containing new sensor data.
- * @throws Exception if the update fails.
+ * @throws Exceptions should be internally resolved to prevent program from crash.
  */
 void updateSensor(BaseSensor *sensor, const std::string &update);
 
@@ -644,8 +668,10 @@ void updateSensor(BaseSensor *sensor, const std::string &update);
  * which includes both basic sensor info and any additional sensor-specific data.
  * 
  * @param sensor Pointer to the sensor whose information is to be printed.
- * @throws Exception if printing fails.
+ * @throws Exceptions should be internally resolved to prevent program from crash.
  */
 void printSensor(BaseSensor *sensor);
+
+
 
 #endif //SENSORS_HPP

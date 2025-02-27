@@ -6,8 +6,8 @@
 /*********************
  *      INCLUDES
  *********************/
-#include <stdio.h>
-#include "parser.hpp"
+#include "manager.hpp"
+
 
 /**********************
  *      TYPEDEFS
@@ -20,9 +20,13 @@
 /*********************
  *      DEFINES
  *********************/
-void manage(char* request)
+void ManageRequest(std::string request)
 {
-    sensor_metadata metadata = parse_metadata(request);
+    SensorMetadata metadata = ParseMetadata(request);
+    if(CheckMetadata(&metadata))
+    {
+        //TODO: Find sensor by ID and call update
+    }
 }
 
 

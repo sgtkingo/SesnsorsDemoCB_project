@@ -29,7 +29,16 @@ int convertStringToType<int>(const std::string &str) {
     if (str.empty()) {
         return int(); // Return default-constructed int (0)
     }
-    return std::stoi(str);
+
+    try
+    {
+        return std::stoi(str);
+    }
+    catch(const std::exception& e)
+    {
+        throw InvalidDataTypeException("convertStringToType<int>", str + " is non-int format string!");
+    }
+     
 }
 
 // Specialization for double
@@ -38,7 +47,15 @@ double convertStringToType<double>(const std::string &str) {
     if (str.empty()) {
         return double(); // Return default double (0.0)
     }
-    return std::stod(str);
+
+    try
+    {
+        return std::stod(str);
+    }
+    catch(const std::exception& e)
+    {
+        throw InvalidDataTypeException("convertStringToType<double>", str + " is non-double format string!");
+    }
 }
 
 // Specialization for float
@@ -47,7 +64,15 @@ float convertStringToType<float>(const std::string &str) {
     if (str.empty()) {
         return float(); // Return default float (0.0f)
     }
-    return std::stof(str);
+
+    try
+    {
+        return std::stof(str);
+    }
+    catch(const std::exception& e)
+    {
+        throw InvalidDataTypeException("convertStringToType<float>", str + " is non-float format string!");
+    }
 }
 
 // Specialization for std::string

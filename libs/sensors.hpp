@@ -18,7 +18,6 @@
 /*********************
  *      INCLUDES
  *********************/
-#include "logs.hpp"         ///< Logging functions.
 #include "exceptions.hpp"  ///< Exceptions.
 #include "helpers.hpp"     ///< Helper functions.
 
@@ -111,6 +110,12 @@ public:
         return UID == uid;
     }
 
+    /**
+     * @brief Equality operator for comparing sensors by communication header.
+     * 
+     * @param comHeader The communication header to compare with.
+     * @return true if the sensor's communication header matches the given header, false otherwise.
+     */
     bool operator==(std::string comHeader) const {
         return comHeader.find(getBasicComHeader()) != std::string::npos;
     }

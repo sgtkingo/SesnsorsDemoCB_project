@@ -1,9 +1,26 @@
-#include "libs/sensors.hpp"
+#include "libs/manager.hpp"
+
+SensorManager Manager = SensorManager();
 
 int main() {
-    std::string configData = "?id=0&Resolution=10";
+    std::string configData = "?id=0&type=ADC&Resolution=10";
+    std::string configData1 = "?type=ADC&Resolution=10";
+    std::string configData2 = "?id=X&type=ADC&Resolution=10";
     std::string updateData = "?id=0&Value=255";
+    std::string updateData1 = "?id=0&type=ADC&Value=255";
 
+    Manager.manage(configData);
+    Manager.manage(configData1);
+    Manager.manage(configData2);
+    Manager.manage(updateData);
+    Manager.manage(updateData1);
+
+    Manager.print(0);
+    Manager.print(1);
+
+    Manager.redraw();
+    Manager.sync();
+    /*
     //You can use generic createSensor function to create sensors
     ADC* adc = createSensor<ADC>(0);
     printSensor(adc);
@@ -61,10 +78,11 @@ int main() {
     //Ovewrite old sensor with new one
     adc = createSensor<ADC>(2);
     adc->print();
+    */
 
     //Dont forget to delete sensors
-    delete adc;
-    delete th;
+    //delete adc;
+    //delete th;
 
     return 0;
 }

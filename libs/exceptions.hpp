@@ -185,5 +185,17 @@ public:
     ~SensorInitializationFailException(){};
 };
 
+class ParseMetadataException : public Exception
+{
+private:
+    /* data */
+public:
+    ParseMetadataException(const std::string &source, Exception* innerException) : Exception(source, innerException) {};
+    ParseMetadataException(const std::string &message, ErrorCode code = ErrorCode::CRTICAL_ERROR_CODE) : Exception(message, code) {};
+    ParseMetadataException(const std::string &source, const std::string &message, ErrorCode code = ErrorCode::CRTICAL_ERROR_CODE) : Exception(source, message, code) {};
+    ParseMetadataException(const std::string &source, const std::string &message, Exception *innerException, ErrorCode code = ErrorCode::CRTICAL_ERROR_CODE) : Exception(source, message, code, innerException) {};
+    ~ParseMetadataException(){};
+};
+
 
 #endif // EXCEPTIONS_HPP

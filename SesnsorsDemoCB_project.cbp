@@ -32,12 +32,17 @@
 			<Add option="-Wall" />
 		</Compiler>
 		<Unit filename="libs/config.hpp" />
+		<Unit filename="libs/error_codes.hpp" />
 		<Unit filename="libs/exceptions.cpp" />
 		<Unit filename="libs/exceptions.hpp" />
+		<Unit filename="libs/helpers.cpp" />
+		<Unit filename="libs/helpers.hpp" />
 		<Unit filename="libs/logs.cpp" />
 		<Unit filename="libs/logs.hpp" />
 		<Unit filename="libs/manager.cpp" />
 		<Unit filename="libs/manager.hpp" />
+		<Unit filename="libs/messenger.cpp" />
+		<Unit filename="libs/messenger.hpp" />
 		<Unit filename="libs/parser.cpp" />
 		<Unit filename="libs/parser.hpp" />
 		<Unit filename="libs/sensors.cpp" />

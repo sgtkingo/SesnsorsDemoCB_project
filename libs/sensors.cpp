@@ -23,6 +23,10 @@
 /*General functions*/
 
 void configSensor(BaseSensor *sensor, const std::string &config) {
+    if(sensor == nullptr) {
+        return;
+    }
+
     try {
         sensor->config(config);
     } catch (const Exception &ex) {
@@ -33,6 +37,10 @@ void configSensor(BaseSensor *sensor, const std::string &config) {
 
 
 void updateSensor(BaseSensor *sensor, const std::string &update) {
+    if(sensor == nullptr) {
+        return;
+    }
+
     try {
         sensor->update(update);
     } catch (const Exception &ex) {
@@ -42,6 +50,10 @@ void updateSensor(BaseSensor *sensor, const std::string &update) {
 }
 
 void printSensor(BaseSensor *sensor) {
+    if(sensor == nullptr) {
+        return;
+    }
+    
     try {
         sensor->print();
     } catch (const Exception &ex) {

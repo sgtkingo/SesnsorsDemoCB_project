@@ -23,9 +23,9 @@ struct SensorMetadata
  *********************/
 
 
-int CheckMetadata(SensorMetadata* metadata);
+int CheckMetadata(const SensorMetadata* metadata);
 
 
-SensorMetadata ParseMetadata(std::string request);
+SensorMetadata ParseMetadata(std::string &request);
 
 #endif //__PARSER_H_

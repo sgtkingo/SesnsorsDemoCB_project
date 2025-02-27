@@ -27,7 +27,7 @@
  * 
  * This function extracts the value of a given key from an update string.
  * 
- * @param update The update string.
+ * @param str The input string.
  * @param key The key to search for.
  * @return The value corresponding to the key, if exist.
  */

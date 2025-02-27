@@ -17,17 +17,9 @@
  *     VARIABLES
  **********************/
 
+
 /*********************
  *      DEFINES
  *********************/
-void ManageRequest(std::string request)
-{
-    SensorMetadata metadata = ParseMetadata(request);
-    if(CheckMetadata(&metadata))
-    {
-        //TODO: Find sensor by ID and call update
-    }
-}
-
 
 

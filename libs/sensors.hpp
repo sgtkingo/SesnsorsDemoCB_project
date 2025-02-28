@@ -78,7 +78,7 @@ struct SensorParam
  */
 class BaseSensor {
 public:
-    int UID;                ///< Unique sensor identifier.
+    std::string UID;                ///< Unique sensor identifier.
     SensorStatus Status;             ///< Sensor status.
     std::string Type;       ///< Sensor type as text.
     std::string Description;///< Description of the sensor.
@@ -106,18 +106,8 @@ public:
      * @param uid The UID to compare with.
      * @return true if the sensor's UID matches the given UID, false otherwise.
      */
-    bool operator==(const int uid) const {
+    bool operator==(const std::string uid) const {
         return UID == uid;
-    }
-
-    /**
-     * @brief Equality operator for comparing sensors by communication header.
-     * 
-     * @param comHeader The communication header to compare with.
-     * @return true if the sensor's communication header matches the given header, false otherwise.
-     */
-    bool operator==(std::string comHeader) const {
-        return comHeader.find(getBasicComHeader()) != std::string::npos;
     }
 
     /**
@@ -125,7 +115,7 @@ public:
      * 
      * @param uid The unique sensor identifier.
      */
-    BaseSensor(int uid) : UID(uid), Status(SensorStatus::OK) 
+    BaseSensor(std::string uid) : UID(uid), Status(SensorStatus::OK) 
     {
         Error = nullptr;
 
@@ -271,7 +261,7 @@ public:
      * @return  The basic communication header.
      */
     std::string getBasicComHeader() const {
-        return "?type=" + Type + "&id=" + std::to_string(UID);
+        return "?type=" + Type + "&id=" + UID;
     }
 
     /**
@@ -415,7 +405,7 @@ public:
     void print() const {
         try
         {
-            logMessage("Sensor UID: %d\n", UID);
+            logMessage("Sensor UID: %s\n", UID.c_str());
             logMessage("\tSensor Type: %s\n", Type.c_str());
             logMessage("\tSensor Description: %s\n", Description.c_str());
             logMessage("\tSensor Status: %d\n", Status);
@@ -470,7 +460,7 @@ public:
      * 
      * @param uid The unique sensor identifier.
      */
-    ADC(int uid) : BaseSensor(uid)
+    ADC(std::string uid) : BaseSensor(uid)
     {
         init();
     }
@@ -546,7 +536,7 @@ class TH : public BaseSensor {
          * 
          * @param uid The unique sensor identifier.
          */
-        TH(int uid) : BaseSensor(uid)
+        TH(std::string uid) : BaseSensor(uid)
         {
             init();
         }
@@ -622,7 +612,7 @@ class TH : public BaseSensor {
  * @throws SensorInitializationFailException if sensor initialization fails.
  */
 template<typename T>
-T* createSensor(int uid) {
+T* createSensor(std::string uid) {
     static_assert(std::is_base_of<BaseSensor, T>::value, "T must be derived from BaseSensor");
     
     T* sensor = nullptr;

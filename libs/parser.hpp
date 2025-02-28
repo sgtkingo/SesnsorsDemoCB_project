@@ -13,7 +13,7 @@
  **********************/
 struct SensorMetadata
 {
-  int ID;
+  std::string UID;
   std::string Type;
   std::string Data;
 };

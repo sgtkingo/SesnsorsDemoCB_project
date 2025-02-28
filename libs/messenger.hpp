@@ -18,51 +18,7 @@
  #include "exceptions.hpp" ///< Exception handling.
  #include <string>
  
- /**
-  * @class IMessenger
-  * @brief Abstract interface for a messenger.
-  *
-  * This interface declares methods for initializing the messenger,
-  * sending messages, and receiving messages. Derived classes should
-  * implement these methods according to the specific communication protocol.
-  */
- class IMessenger {
- public:
-     /**
-      * @brief Constructs a new IMessenger object.
-      */
-     IMessenger() {}
- 
-     /**
-      * @brief Virtual destructor.
-      */
-     virtual ~IMessenger() {}
- 
-     /**
-      * @brief Initializes the messenger.
-      * 
-      * This method performs necessary initialization steps.
-      * @throws Exception if initialization fails.
-      */
-     virtual void initMessenger() = 0;
- 
-     /**
-      * @brief Sends a message.
-      * 
-      * @param message The message to send.
-      * @throws Exception if sending fails.
-      */
-     virtual void sendMessage(const std::string &message) = 0;
- 
-     /**
-      * @brief Receives a message.
-      * 
-      * @return A string containing the received message.
-      * @throws Exception if receiving fails.
-      */
-     virtual std::string receiveMessage() = 0;
- };
- 
+
  /**
   * @brief Sends a message using the global messenger.
   * 

@@ -109,6 +109,14 @@
     "map": "cpp",
     "iostream": "cpp",
     "istream": "cpp",
-    "sstream": "cpp"
+    "sstream": "cpp",
+    "xstring": "cpp",
+    "cstring": "cpp",
+    "list": "cpp",
+    "xhash": "cpp",
+    "xmemory": "cpp",
+    "xtr1common": "cpp",
+    "xtree": "cpp",
+    "xutility": "cpp"
   }
 }

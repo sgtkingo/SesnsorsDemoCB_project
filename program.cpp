@@ -9,17 +9,22 @@ int main() {
     std::string updateData = "?id=0&Value=255";
     std::string updateData1 = "?id=0&type=ADC&Value=255";
 
+    std::string initRequest = "?0:ADC&1:ADC&2:TH";
+
+    //Manager.init();
+    Manager.init(initRequest);
+
     Manager.manage(configData);
     Manager.manage(configData1);
     Manager.manage(configData2);
     Manager.manage(updateData);
     Manager.manage(updateData1);
 
-    Manager.print(0);
-    Manager.print(1);
+    Manager.printAll();
 
     Manager.redraw();
     Manager.sync();
+    Manager.erase();
     /*
     //You can use generic createSensor function to create sensors
     ADC* adc = createSensor<ADC>(0);

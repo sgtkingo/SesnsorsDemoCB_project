@@ -11,6 +11,7 @@
  *********************/
 #include "exceptions.hpp"
 #include <string>
+#include <vector>
 #include <type_traits>      ///< For is_same
 
 /**********************
@@ -32,6 +33,18 @@
  * @return The value corresponding to the key, if exist.
  */
 std::string getValueFromKeyValueLikeString(std::string str, std::string key, char separator);
+
+
+/**
+ * @brief Split string by separator.
+ * 
+ * This function splits a string into a vector of strings using a specified separator.
+ * 
+ * @param str The input string.
+ * @param separator The separator character.
+ * @return A vector of strings.
+ */
+std::vector<std::string> splitString(std::string str, char separator);
 
 /**
  * @brief Convert string to type.

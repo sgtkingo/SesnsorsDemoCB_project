@@ -17,6 +17,19 @@ std::string getValueFromKeyValueLikeString(std::string str, std::string key, cha
     return value;
 }
 
+std::vector<std::string> splitString(std::string str, char separator) {
+    std::vector<std::string> result;
+    size_t pos = 0;
+    size_t end = 0;
+    while((end = str.find(separator, pos)) != std::string::npos) {
+        result.push_back(str.substr(pos, end - pos));
+        pos = end + 1;
+    }
+    result.push_back(str.substr(pos));
+
+    return result;
+}
+
 template <typename T>
 T convertStringToType(const std::string &str) {
     throw std::invalid_argument("Unsupported type conversion");

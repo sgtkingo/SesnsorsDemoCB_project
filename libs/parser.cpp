@@ -22,13 +22,13 @@
  *********************/
 int CheckMetadata(const SensorMetadata* metadata)
 {
-    return metadata->ID != -1 && !metadata->Type.empty() && !metadata->Data.empty();
+    return !metadata->UID.empty() && !metadata->Type.empty() && !metadata->Data.empty();
 }
 
 SensorMetadata ParseMetadata(std::string &request)
 {
     SensorMetadata metadata;
-    metadata.ID = -1;
+    metadata.UID = "";
     metadata.Type = "";
     metadata.Data = "";
 
@@ -44,21 +44,22 @@ SensorMetadata ParseMetadata(std::string &request)
     }
 
     //Parse ID from request
-    try
+    std::string uid = getValueFromKeyValueLikeString(request, "id", '&');
+    if(uid.empty())
     {
-        std::string id = getValueFromKeyValueLikeString(request, "id", '&');
-        if(id.empty())
-        {
-            throw ParseMetadataException("ParseMetadata", "ID not found in request!");
-        }
-        metadata.ID = convertStringToType<int>(id);
+        throw ParseMetadataException("ParseMetadata", "ID not found in request!");
     }
-    catch(const Exception& e)
+    metadata.UID = uid;
+
+    //Parse Type from request
+    std::string type = getValueFromKeyValueLikeString(request, "type", '&');
+    if(type.empty())
     {
-        throw ParseMetadataException("ParseMetadata", new Exception(e));
+        throw ParseMetadataException("ParseMetadata", "Type not found in request!");
     }
-    
-    metadata.Type = getValueFromKeyValueLikeString(request, "type", '&');
+    metadata.Type = type;
+
+    //Save the rest of the request as data
     metadata.Data = request;
 
     return metadata;

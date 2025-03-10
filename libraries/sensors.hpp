@@ -84,6 +84,8 @@ public:
     std::string Description;///< Description of the sensor.
     Exception *Error;       ///< Pointer to an exception object (if any).
 
+    //lv_obj_t *ui_Container; ///< Pointer to the UI widgets container.
+
     std::unordered_map<std::string, SensorParam> Values; ///< Sensor values.
     std::map<std::string, SensorParam> Configs;          ///< Sensor configurations.
 
@@ -438,6 +440,13 @@ public:
      * This function should be overridden by derived classes to draw sensor-specific details.
      */
     virtual void draw() = 0;
+
+    /**
+     * @brief Construct UI elements.
+     * 
+     * This function should be overridden by derived classes to construct sensor-specific GUI.
+    */
+    virtual void construct() = 0;
 };
 
 /**************************************************************************/
@@ -494,6 +503,9 @@ public:
         {
             throw;
         }
+
+        //Call for construct UI elements
+        construct();
     }
 
     /**
@@ -511,9 +523,19 @@ public:
 
         // Call draw function here
         //TODO: Implement draw function
-
         
         redrawPenging = false; // Reset flag to redraw sensor.
+    }
+
+    /**
+     * @brief Construct UI elements.
+     * 
+     * This function constructs the sensor-specific GUI.
+     */
+    virtual void construct() override {
+        // Construct sensor UI
+
+        // Call construct LVGL functions here
     }
 };
 
@@ -572,6 +594,9 @@ class TH : public BaseSensor {
             {
                 throw;
             }
+
+            //Call for construct UI elements
+            construct();
         }
     
         /**
@@ -591,6 +616,17 @@ class TH : public BaseSensor {
 
             
             redrawPenging = false; // Reset flag to redraw sensor.
+        }
+
+        /**
+         * @brief Construct UI elements.
+         * 
+         * This function constructs the sensor-specific GUI.
+         */
+        virtual void construct() override {
+            // Construct sensor UI
+
+            // Call construct LVGL functions here
         }
 };
 

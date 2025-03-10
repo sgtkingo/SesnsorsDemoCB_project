@@ -1,4 +1,4 @@
-#include "libs/manager.hpp"
+#include "libraries/manager.hpp"
 
 SensorManager Manager = SensorManager();
 

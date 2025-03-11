@@ -14,7 +14,7 @@
 struct SensorMetadata
 {
   std::string UID;
-  std::string Type;
+  std::string Status;
   std::string Data;
 };
 
@@ -22,9 +22,9 @@ struct SensorMetadata
  *      DECLARES
  *********************/
 
+int IsValid(const SensorMetadata* metadata, const std::string &uid);
 
 int CheckMetadata(const SensorMetadata* metadata);
-
 
 SensorMetadata ParseMetadata(std::string &request);
 

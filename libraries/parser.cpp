@@ -7,7 +7,9 @@
  *      INCLUDES
  *********************/
 #include "parser.hpp"
+
 #include <cstdio>
+#include <algorithm> // For std::transform
 
 /**********************
  *      TYPEDEFS
@@ -22,45 +24,53 @@
  *********************/
 int CheckMetadata(const SensorMetadata* metadata)
 {
-    return !metadata->UID.empty() && !metadata->Type.empty() && !metadata->Data.empty();
+    if( metadata == nullptr )
+    {
+        return 0;
+    }
+
+    return !metadata->UID.empty() && !metadata->Data.empty();
 }
 
-SensorMetadata ParseMetadata(std::string &request)
+int IsValid(const SensorMetadata* metadata, const std::string &uid)
+{
+    return CheckMetadata(metadata) && metadata->UID == uid;
+}
+
+SensorMetadata ParseMetadata(std::string &response)
 {
     SensorMetadata metadata;
     metadata.UID = "";
-    metadata.Type = "";
+    metadata.Status = "";
     metadata.Data = "";
 
     //Check request format
-    if(request.size() < 1 || request[0] != '?')
+    if(response.size() < 1 || response[0] != '?')
     {
-        throw ParseMetadataException("ParseMetadata", "Invalid request format!");
+        return metadata;
     }
-    else
-    {
-        //Get rid of the '?' character
-        request.erase(0, 1);
-    }
+
+    //Get rid of the '?' character
+    response.erase(0, 1);
+    // Convert to lowercase
+    std::transform(response.begin(), response.end(), response.begin(), ::tolower);
 
     //Parse ID from request
-    std::string uid = getValueFromKeyValueLikeString(request, "id", '&');
-    if(uid.empty())
+    std::string uid = getValueFromKeyValueLikeString(response, "id", '&');
+    if(!uid.empty())
     {
-        throw ParseMetadataException("ParseMetadata", "ID not found in request!");
+        metadata.UID = uid;
     }
-    metadata.UID = uid;
 
-    //Parse Type from request
-    std::string type = getValueFromKeyValueLikeString(request, "type", '&');
-    if(type.empty())
+    //Parse Status from request
+    std::string status = getValueFromKeyValueLikeString(response, "status", '&');
+    if(!status.empty())
     {
-        throw ParseMetadataException("ParseMetadata", "Type not found in request!");
+        metadata.Status = status;
     }
-    metadata.Type = type;
-
+    
     //Save the rest of the request as data
-    metadata.Data = request;
+    metadata.Data = response;
 
     return metadata;
 }

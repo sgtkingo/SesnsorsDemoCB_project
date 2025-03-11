@@ -20,6 +20,8 @@
  *********************/
 #include "exceptions.hpp"  ///< Exceptions.
 #include "helpers.hpp"     ///< Helper functions.
+#include "parser.hpp"      ///< Parser functions.
+#include "messenger.hpp"   ///< Messenger functions.
 
 #include <string>
 #include <unordered_map>
@@ -34,10 +36,27 @@
  * - OFFLINE: Sensor is offline.
  */
 enum class SensorStatus {
-    OK = 0,       ///< Sensor operating normally.
+    OK = 1,       ///< Sensor operating normally.
     ERROR = -1,   ///< Sensor has an error.
-    OFFLINE = 1   ///< Sensor is offline.
+    OFFLINE = 0   ///< Sensor is offline.
 };
+
+/**
+ * @enum SensorsCommands
+ * @brief Enumeration representing possible sensor commands.
+ *
+ * - CONFIG: Configure sensor.
+ * - UPDATE: Update sensor.
+ * - INIT: Initialize sensor.
+ * - RESET: Reset sensor.
+ */
+enum class SensorsCommands
+ {
+     CONFIG,
+     UPDATE,
+     INIT,
+     RESET
+ };
 
 /**
  * @enum DataType
@@ -77,6 +96,47 @@ struct SensorParam
  * common sensor details.
  */
 class BaseSensor {
+protected:
+    bool redrawPenging = true;    ///< Flag to indicate if sensor needs to be redrawn.
+    bool isConfigsSync = false;          ///< Flag to indicate if sensor congig is synchronized with real sensor.
+    bool isValuesSync = false;          ///< Flag to indicate if sensor values is synchronized with real sensor.
+
+    std::unordered_map<std::string, SensorParam> Values; ///< Sensor values.
+    std::map<std::string, SensorParam> Configs;          ///< Sensor configurations.
+
+    void syncConfigs() {
+        std::string configRequest = "?CONFIG&id=" + UID;
+        for (auto &c : Configs) {
+            configRequest += "&" + c.first + "=" + c.second.Value;
+        }
+        sendMessage(configRequest);
+
+        isConfigsSync = true; // Set flag to indicate sensor is synchronized with real sensor.
+    }
+
+    void syncValues()
+    {
+        isValuesSync = false; // Set flag to indicate sensor is not synchronized with real sensor.
+        std::string updateRequest = "?UPDATE&id=" + UID;
+        std::string updateResponse = "";
+
+        //Check if response is valid
+        SensorMetadata metadata;
+        //Start update sync process
+        sendMessage(updateRequest);
+        updateResponse = receiveMessage();
+        metadata = ParseMetadata(updateResponse);
+
+        if( IsValid(&metadata, UID) )
+        {
+            update(metadata.Data);
+            setStatus(metadata.Status);
+
+            redrawPenging = true; // Set flag to redraw sensor - values updated.
+            isValuesSync = true; // Set flag to indicate sensor is synchronized with real sensor.  
+        }      
+    }
+
 public:
     std::string UID;                ///< Unique sensor identifier.
     SensorStatus Status;             ///< Sensor status.
@@ -85,13 +145,6 @@ public:
     Exception *Error;       ///< Pointer to an exception object (if any).
 
     //lv_obj_t *ui_Container; ///< Pointer to the UI widgets container.
-
-    std::unordered_map<std::string, SensorParam> Values; ///< Sensor values.
-    std::map<std::string, SensorParam> Configs;          ///< Sensor configurations.
-
-    bool redrawPenging = true;    ///< Flag to indicate if sensor needs to be redrawn.
-    bool isSync = false;          ///< Flag to indicate if sensor is synchronized with real sensor.
-
     /**
      * @brief Equality operator for comparing sensors by UID.
      * 
@@ -122,7 +175,8 @@ public:
         Error = nullptr;
 
         redrawPenging = true;
-        isSync = false;
+        isConfigsSync = false;
+        isValuesSync = false;
     }
 
     /**
@@ -131,6 +185,34 @@ public:
     virtual ~BaseSensor() 
     {
         delete Error;
+    }
+
+    /**
+     * @brief Set sensor status.
+     * 
+     * This function sets the sensor status based on the given status string.
+     * 
+     * @param status The status string.
+     */
+    void setStatus(std::string status)
+    {
+        if( status.empty() )
+        {
+            return;
+        }
+
+        if(status == "1")
+        {
+            Status = SensorStatus::OK;
+        }
+        else if(status == "-1")
+        {
+            Status = SensorStatus::ERROR;
+        }
+        else if(status == "0")
+        {
+            Status = SensorStatus::OFFLINE;
+        }
     }
 
     /**
@@ -177,7 +259,7 @@ public:
             throw ConfigurationNotFoundException("BaseSensor::setConfig", "Configuration not found for key: " + key);
         }
 
-        isSync = false; // Set flag to indicate sensor is not synchronized with real sensor.
+        isConfigsSync = false; // Set flag to indicate sensor is not synchronized with real sensor.
     }
 
     /**
@@ -223,8 +305,6 @@ public:
         else{
             throw ValueNotFoundException("BaseSensor::setValue", "Value not found for key: " + key);
         }
-        
-        isSync = false; // Set flag to indicate sensor is not synchronized with real sensor.
     }
 
     /**
@@ -255,15 +335,6 @@ public:
             return Configs[key].Unit;
         }
         return "";
-    }
-
-    /**
-     * @brief Get basic communication header.
-     * 
-     * @return  The basic communication header.
-     */
-    std::string getBasicComHeader() const {
-        return "?type=" + Type + "&id=" + UID;
     }
 
     /**
@@ -299,6 +370,38 @@ public:
     }
 
     /**
+     * @brief Synchronize with the real sensor.
+     * 
+     * @throws Exception if synchronization fails.
+     */
+    virtual void synchronize()
+    {
+        if(!isConfigsSync)
+        {
+            try
+            {
+                syncConfigs();
+            }
+            catch(const Exception& e)
+            {
+                throw;
+            }
+        }
+
+        if(!isValuesSync)
+        {
+            try
+            {
+                syncValues();
+            }
+            catch(const Exception& e)
+            {
+                throw;
+            }
+        }
+    }
+
+    /**
      * @brief Add configuration parameter to the sensor.
      * 
      * @param key The key of the configuration parameter.
@@ -313,25 +416,8 @@ public:
         {
             throw InvalidConfigurationException("BaseSensor::addConfigParameter", e.what());
         }
-    }
 
-    /**
-     * @brief Synchronize configuration with the real sensor.
-     * 
-     * @throws Exception if synchronization fails.
-     */
-    virtual void synchronize()
-    {
-        std::string syncMessage = getBasicComHeader();
-        for (auto &c : Configs) {
-            syncMessage += "&" + c.first + "=" + c.second.Value;
-        }
-        
-        //Send config changes to real sensor
-        //TODO: Implement sending config changes to real sensor
-        logMessage("Sync message: %s\n", syncMessage.c_str());
-
-        isSync = true;
+        isConfigsSync = false; // Set flag to indicate sensor is not synchronized with real sensor.
     }
 
     /**
@@ -350,12 +436,6 @@ public:
                 c.second.Value = value;
             }
         }
-        if(value.empty()) {
-            throw ConfigurationNotFoundException("BaseSensor::config", "No configuration found in config string!");
-        }
-
-        redrawPenging = true; // Set flag to redraw sensor - values updated.
-        isSync = true; // Set flag to indicate sensor is synchronized with real sensor.
     }
 
     /**
@@ -374,6 +454,8 @@ public:
         {
             throw InvalidValueException("BaseSensor::addValueParameter", new Exception(e));
         }
+
+        isValuesSync = false; // Set flag to indicate sensor is not synchronized with real sensor.
     }
 
     /**
@@ -392,12 +474,6 @@ public:
                 c.second.Value = value;
             }
         }
-
-        if(value.empty()) {
-            throw ValueNotFoundException("BaseSensor::update", "No value found in update string!");
-        }
-
-        redrawPenging = true; // Set flag to redraw sensor - values updated.
     }
 
     /**
@@ -495,17 +571,14 @@ public:
         try
         {
             // Default configs
-            addConfigParameter("Resolution", {"12", "bits", DataType::INT});
+            addConfigParameter("resolution", {"12", "bits", DataType::INT});
             // Default values
-            addValueParameter("Value", {"0", "", DataType::INT});
+            addValueParameter("value", {"0", "", DataType::INT});
         }
         catch(const std::exception& e)
         {
             throw;
         }
-
-        //Call for construct UI elements
-        construct();
     }
 
     /**
@@ -585,18 +658,15 @@ class TH : public BaseSensor {
             try
             {
                 // Default configs
-                addConfigParameter("Precision", {"2", "decimals", DataType::INT});
+                addConfigParameter("precision", {"2", "decimals", DataType::INT});
                 // Default values
-                addValueParameter("Temperature", {"0", "Celsia", DataType::FLOAT});
-                addValueParameter("Humidity", {"0", "%", DataType::INT});
+                addValueParameter("temperature", {"0", "Celsia", DataType::FLOAT});
+                addValueParameter("humidity", {"0", "%", DataType::INT});
             }
             catch(const std::exception& e)
             {
                 throw;
             }
-
-            //Call for construct UI elements
-            construct();
         }
     
         /**
@@ -702,6 +772,37 @@ void updateSensor(BaseSensor *sensor, const std::string &update);
  * @throws Exceptions should be internally resolved to prevent program from crash.
  */
 void printSensor(BaseSensor *sensor);
+
+/**
+ * @brief Synchronizes the sensor with the real sensor.
+ * 
+ * This function synchronizes the sensor with the real sensor by calling the sensor's synchronize() method.
+ * 
+ * @param sensor Pointer to the sensor to be synchronized.
+ * @throws Exceptions should be internally resolved to prevent program from crash.
+ */
+void syncSensor(BaseSensor *sensor);
+
+/**
+ * @brief Draws the sensor.
+ * 
+ * This function draws the sensor by calling the sensor's draw() method.
+ * 
+ * @param sensor Pointer to the sensor to be drawn.
+ * @throws Exceptions should be internally resolved to prevent program from crash.
+ */
+void drawSensor(BaseSensor *sensor);
+
+/**
+ * @brief Constructs the sensor.
+ * 
+ * This function constructs the sensor by calling the sensor's construct() method.
+ * 
+ * @param sensor Pointer to the sensor to be constructed.
+ * @throws Exceptions should be internally resolved to prevent program from crash.
+ */
+void constructSensor(BaseSensor *sensor);
+
 
 
 

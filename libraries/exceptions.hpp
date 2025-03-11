@@ -185,6 +185,18 @@ public:
     ~SensorInitializationFailException(){};
 };
 
+class SensorSynchronizationFailException : public Exception
+{
+private:
+    /* data */
+public:
+    SensorSynchronizationFailException(const std::string &source, Exception* innerException) : Exception(source, innerException) {};
+    SensorSynchronizationFailException(const std::string &message, ErrorCode code = ErrorCode::CRTICAL_ERROR_CODE) : Exception(message, code) {};
+    SensorSynchronizationFailException(const std::string &source, const std::string &message, ErrorCode code = ErrorCode::CRTICAL_ERROR_CODE) : Exception(source, message, code) {};
+    SensorSynchronizationFailException(const std::string &source, const std::string &message, Exception *innerException, ErrorCode code = ErrorCode::CRTICAL_ERROR_CODE) : Exception(source, message, code, innerException) {};
+    ~SensorSynchronizationFailException(){};
+};
+
 class ParseMetadataException : public Exception
 {
 private:

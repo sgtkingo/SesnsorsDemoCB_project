@@ -13,18 +13,14 @@ int main() {
 
     //Manager.init();
     Manager.init(initRequest);
+    Manager.print();
 
-    Manager.manage(configData);
-    Manager.manage(configData1);
-    Manager.manage(configData2);
-    Manager.manage(updateData);
-    Manager.manage(updateData1);
-
-    Manager.printAll();
-
+    Manager.reconstruct();
+    Manager.resync();
     Manager.redraw();
-    Manager.sync();
-    Manager.erase();
+
+    Manager.print();
+
     /*
     //You can use generic createSensor function to create sensors
     ADC* adc = createSensor<ADC>(0);

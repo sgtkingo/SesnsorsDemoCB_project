@@ -19,6 +19,7 @@
 /**********************
  *      TYPEDEFS
  **********************/
+ 
 class SensorManager
 {
 private:
@@ -26,7 +27,7 @@ private:
 public:
     SensorManager(/* args */)
     {
-    Sensors = std::vector<BaseSensor*>();
+        Sensors = std::vector<BaseSensor*>();
     };
 
     ~ SensorManager(){};
@@ -36,37 +37,37 @@ public:
         Sensors.clear();
     }
 
-    void init(std::string request){
+    void init(std::string response){
         logMessage("Initializing manager via sensors list...\n");
         Sensors.clear();
 
         //Check request format
-        if(request.size() < 1 || request[0] != '?')
+        if(response.size() < 1 || response[0] != '?')
         {
-            throw Exception("InitManager", "Invalid request format!");
+            throw Exception("InitManager", "Invalid response format!");
         }
         else
         {
             //Get rid of the '?' character
-            request.erase(0, 1);
+            response.erase(0, 1);
         }
 
         //Add sensors here
         //Expected format: ?0:ADC&1:ADC&2:TH
-        std::vector<std::string> sensorRequestList = splitString(request, '&');
-        logMessage("\t(i)Found %d sensors...\n", sensorRequestList.size());
+        std::vector<std::string> sensorList = splitString(response, '&');
+        logMessage("\t(i)Found %d sensors...\n", sensorList.size());
         std::string id;
         std::string type;
 
-        for (std::string sensorRequest : sensorRequestList)
+        for (std::string sensor: sensorList)
         {
-            logMessage("\tProcessing sensor request: %s\n", sensorRequest.c_str());
-            if (sensorRequest.empty())
+            logMessage("\tProcessing sensor request: %s\n", sensor.c_str());
+            if (sensor.empty())
             {
                 continue;
             }
-            id = sensorRequest.substr(0, sensorRequest.find(':'));
-            type = sensorRequest.substr(sensorRequest.find(':') + 1);
+            id = sensor.substr(0, sensor.find(':'));
+            type = sensor.substr(sensor.find(':') + 1);
 
             //For ADC
             if (type == "ADC")
@@ -74,7 +75,6 @@ public:
                 addSensor(new ADC(id));
                 logMessage("\t(*)Detected known sensor type:%s, sensor with ID:%s added!\n", type.c_str(), id.c_str());
             }
-
             //For TH
             else if (type == "TH")
             {
@@ -111,43 +111,13 @@ public:
         Sensors.push_back(sensor);
     }
 
-    void manage(std::string request)
+    void sync(std::string id)
     {
-        //Check if request is empty to prevent unnecessary parsing
-        if( request.empty() )
+        BaseSensor* sensor = getSensor(id);
+        if(sensor != nullptr)
         {
-            return;
+            syncSensor(sensor);
         }
-
-        //Parsing starts here
-        SensorMetadata metadata;
-        try
-        {
-            metadata = ParseMetadata(request);
-        }
-        catch(const Exception& e)
-        {
-            e.print();
-            return;
-        }
-
-        //Check if metadata is valid
-        if(!CheckMetadata(&metadata))
-        {
-            logMessage("(!)Invalid metadata from request:%d!\n", request.c_str());
-            return;
-        }
-
-        //Get sensor
-        BaseSensor* sensor = getSensor(metadata.UID);
-        if(sensor == nullptr)
-        {
-            logMessage("(!)Sensor with ID %s not found!\n", metadata.UID.c_str());
-            return;
-        }
-
-        //Process request
-        updateSensor(sensor, metadata.Data);
     }
 
     void print(std::string uid)
@@ -156,7 +126,7 @@ public:
         printSensor(sensor);
     }
 
-    void printAll()
+    void print()
     {
         for (BaseSensor* sensor : Sensors)
         {
@@ -168,15 +138,23 @@ public:
     {
         for (BaseSensor* sensor : Sensors)
         {
-            sensor->draw();
+            drawSensor(sensor);
         }
     }
 
-    void sync()
+    void reconstruct()
     {
         for (BaseSensor* sensor : Sensors)
         {
-            sensor->synchronize();
+            constructSensor(sensor);
+        }   
+    }
+
+    void resync()
+    {
+        for (BaseSensor* sensor : Sensors)
+        {
+            syncSensor(sensor);
         }
     } 
     

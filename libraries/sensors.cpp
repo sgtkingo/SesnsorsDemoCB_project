@@ -61,3 +61,42 @@ void printSensor(BaseSensor *sensor) {
         sensor->setError(new Exception(ex));
     }
 }
+
+void syncSensor(BaseSensor *sensor) {
+    if(sensor == nullptr) {
+        return;
+    }
+
+    try {
+        sensor->synchronize();
+    } catch (const Exception &ex) {
+        ex.print();
+        sensor->setError(new Exception(ex));
+    }
+}
+
+void drawSensor(BaseSensor *sensor) {
+    if(sensor == nullptr) {
+        return;
+    }
+
+    try {
+        sensor->draw();
+    } catch (const Exception &ex) {
+        ex.print();
+        sensor->setError(new Exception(ex));
+    }
+}
+
+void constructSensor(BaseSensor *sensor) {
+    if(sensor == nullptr) {
+        return;
+    }
+
+    try {
+        sensor->construct();
+    } catch (const Exception &ex) {
+        ex.print();
+        sensor->setError(new Exception(ex));
+    }
+}

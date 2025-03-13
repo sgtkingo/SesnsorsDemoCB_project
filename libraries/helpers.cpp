@@ -19,6 +19,10 @@ std::string getValueFromKeyValueLikeString(std::string str, std::string key, cha
 
 std::vector<std::string> splitString(std::string str, char separator) {
     std::vector<std::string> result;
+    if (str.empty()) {
+        return result;
+    }
+
     size_t pos = 0;
     size_t end = 0;
     while((end = str.find(separator, pos)) != std::string::npos) {

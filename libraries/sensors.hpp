@@ -376,6 +376,7 @@ public:
      */
     virtual void synchronize()
     {
+        isValuesSync = false; // Set flag to indicate sensor is not synchronized with real sensor.
         if(!isConfigsSync)
         {
             try

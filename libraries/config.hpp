@@ -18,6 +18,7 @@
 #define UART1_BAUDRATE 9600
 #define UART1_RX -1
 #define UART1_TX -1
+#define UART_TIMEOUT 100
 
 
 /// Uncomment to enable logging for standard console applications (PC/Linux)

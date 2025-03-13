@@ -341,7 +341,7 @@
 1741878320 source:g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\manager.cpp
 	"manager.hpp"
 
-1741878316 g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\manager.hpp
+1741880287 g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\manager.hpp
 	"sensor_factory.hpp"
 	<vector>
 	<algorithm>
@@ -371,7 +371,7 @@
 	<HardwareSerial.h>
 	<stdio.h>
 
-1741877622 source:g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\parser.cpp
+1741878462 source:g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\parser.cpp
 	"parser.hpp"
 	<cstdio>
 	<algorithm>

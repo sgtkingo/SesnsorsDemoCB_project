@@ -27,9 +27,20 @@
     
     std::string receiveMessage() {
         String msg = ""; // static so it persists between calls
-        if (UART1.available() > 0) {
-            msg = UART1.readString();
+        unsigned long startTime = millis();
+
+        while (UART1.available() == 0 && (millis() - startTime) < UART_TIMEOUT) {
+          // Wait until data arrives or timeout occurs
         }
+
+        if (Serial.available() > 0) {
+          // Read response
+          msg = UART1.readString();
+        } else {
+          // Handle timeout situation
+          // Do nothing
+        }
+
         return std::string(msg.c_str());
     }
     

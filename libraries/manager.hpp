@@ -39,6 +39,8 @@ public:
     ~ SensorManager(){};
 
     void init(bool fromRequest = false){
+        initMessenger();
+
         if(!fromRequest)
         {
             logMessage("Initializing manager via fixed sensors list...\n");

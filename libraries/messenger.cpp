@@ -38,6 +38,10 @@
         while(!UART1);
     }
 
+    void initMessenger() {
+        initMessenger(UART1_BAUDRATE, SERIAL_8N1, UART1_TX, UART1_RX);
+    }
+
 #elif defined(STDIO_H)
     #include <stdio.h>    ///< Include standard I/O functions
 
@@ -55,7 +59,7 @@
         // No initialization needed for standard I/O
         return;
     }
-
+    
 #endif
 
 #endif // MESSANGER_HPP

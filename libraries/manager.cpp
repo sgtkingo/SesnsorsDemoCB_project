@@ -1,5 +1,5 @@
 /**
- * @file messenger.cpp
+ * @file manager.cpp
  * @brief Definition of the manager 
  * 
  * This source defines the manager functions and implementations.

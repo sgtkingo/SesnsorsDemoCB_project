@@ -1,5 +1,5 @@
 /**
- * @file messenger.hpp
+ * @file manager.hpp
  * @brief Declaration of the manager 
  * 
  * This header defines the manager class for managing sensors.
@@ -15,6 +15,9 @@
  *      INCLUDES
  *********************/
 #include "sensor_factory.hpp"
+#include "messenger.hpp"
+#include "parser.hpp"
+#include "helpers.hpp"
 
 #include <vector>
 #include <algorithm>
@@ -128,12 +131,33 @@ public:
         }   
     }
 
+    //Batch multi-update
     void resync()
     {
+        /*
         for (BaseSensor* sensor : Sensors)
         {
             syncSensor(sensor);
         }
+        */
+       std::string request = "?UPDATE";
+       sendMessage(request);
+
+       std::string response = receiveMessage();
+       std::vector<std::string> responses = splitString(response, '?');
+       for(std::string resp : responses)
+       {
+           SensorMetadata metadata = ParseMetadata(resp);
+           if(CheckMetadata(&metadata))
+           {
+               BaseSensor* sensor = getSensor(metadata.UID);
+               if(sensor != nullptr)
+               {
+                   updateSensor(sensor, metadata.Data);
+                   printSensor(sensor);
+               }
+           }
+       }
     } 
     
     void erase()

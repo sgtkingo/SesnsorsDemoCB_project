@@ -1,6 +1,10 @@
 /**
  * @file logs.h
  * @brief Header file for logging functions.
+ * 
+ * @copyright 2024 MTA
+ * @author 
+ * Ing. Jiri Konecny
  */
 
  #ifndef LOGS_H

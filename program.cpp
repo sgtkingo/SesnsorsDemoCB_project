@@ -12,7 +12,7 @@ int main() {
     std::string initRequest = "?0:ADC&1:ADC&2:TH";
 
     //Manager.init();
-    Manager.init(initRequest);
+    Manager.init(true);
     Manager.print();
 
     Manager.reconstruct();
@@ -20,6 +20,7 @@ int main() {
     Manager.redraw();
 
     Manager.print();
+    Manager.erase();
 
     /*
     //You can use generic createSensor function to create sensors

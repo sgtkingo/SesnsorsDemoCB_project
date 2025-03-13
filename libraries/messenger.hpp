@@ -2,8 +2,7 @@
  * @file messenger.hpp
  * @brief Declaration of the messenger interface and related global functions.
  * 
- * This header defines the abstract interface IMessenger for sending and receiving
- * messages, as well as global functions for message operations. It includes configuration
+ * This header declares the global functions for message operations. It includes configuration
  * and exception handling support.
  * 
  * @copyright 2024 MTA

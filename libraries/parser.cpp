@@ -22,6 +22,8 @@
 /*********************
  *      DEFINES
  *********************/
+
+
 int CheckMetadata(const SensorMetadata* metadata)
 {
     if( metadata == nullptr )
@@ -37,7 +39,7 @@ int IsValid(const SensorMetadata* metadata, const std::string &uid)
     return CheckMetadata(metadata) && metadata->UID == uid;
 }
 
-SensorMetadata ParseMetadata(std::string &response)
+SensorMetadata ParseMetadata(std::string &response, bool caseSensitive)
 {
     SensorMetadata metadata;
     metadata.UID = "";
@@ -52,8 +54,12 @@ SensorMetadata ParseMetadata(std::string &response)
 
     //Get rid of the '?' character
     response.erase(0, 1);
-    // Convert to lowercase
-    std::transform(response.begin(), response.end(), response.begin(), ::tolower);
+
+    if(!caseSensitive)
+    {
+        // Convert to lowercase
+        std::transform(response.begin(), response.end(), response.begin(), ::tolower);
+    }
 
     //Parse ID from request
     std::string uid = getValueFromKeyValueLikeString(response, "id", '&');

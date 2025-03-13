@@ -1,17 +1,20 @@
-/*
-* Copyright 2024 MTA
-* Author: Ing. Jiri Konecny
-*/
-
+/**
+ * @file messenger.hpp
+ * @brief Declaration of the manager 
+ * 
+ * This header defines the manager class for managing sensors.
+ * 
+ * @copyright 2025 MTA
+ * @author 
+ * Ing. Jiri Konecny
+ */
 #ifndef __MANAGER_H_
 #define __MANAGER_H_
 
 /*********************
  *      INCLUDES
  *********************/
-#include "parser.hpp"
-#include "messenger.hpp"
-#include "sensors.hpp"
+#include "sensor_factory.hpp"
 
 #include <vector>
 #include <algorithm>
@@ -19,7 +22,10 @@
 /**********************
  *      TYPEDEFS
  **********************/
- 
+
+/*
+
+*/
 class SensorManager
 {
 private:
@@ -32,61 +38,31 @@ public:
 
     ~ SensorManager(){};
 
-    void init(){
-        logMessage("Initializing manager to default state...\n");
-        Sensors.clear();
-    }
+    void init(bool fromRequest = false){
+        if(!fromRequest)
+        {
+            logMessage("Initializing manager via fixed sensors list...\n");
+            createSensorList(Sensors);
+            return;
+        }
 
-    void init(std::string response){
-        logMessage("Initializing manager via sensors list...\n");
-        Sensors.clear();
+        //else
+        logMessage("Initializing manager via request...\n");
 
+        std::string request = "?INIT";
+        sendMessage(request);
+        std::string response = receiveMessage();
         //Check request format
         if(response.size() < 1 || response[0] != '?')
         {
-            throw Exception("InitManager", "Invalid response format!");
+            logMessage("Invalid sensor list format format!\n");
+            init(false);
+            return;
         }
-        else
-        {
-            //Get rid of the '?' character
-            response.erase(0, 1);
-        }
+        //Get rid of the '?' character
+        response.erase(0, 1);
 
-        //Add sensors here
-        //Expected format: ?0:ADC&1:ADC&2:TH
-        std::vector<std::string> sensorList = splitString(response, '&');
-        logMessage("\t(i)Found %d sensors...\n", sensorList.size());
-        std::string id;
-        std::string type;
-
-        for (std::string sensor: sensorList)
-        {
-            logMessage("\tProcessing sensor request: %s\n", sensor.c_str());
-            if (sensor.empty())
-            {
-                continue;
-            }
-            id = sensor.substr(0, sensor.find(':'));
-            type = sensor.substr(sensor.find(':') + 1);
-
-            //For ADC
-            if (type == "ADC")
-            {
-                addSensor(new ADC(id));
-                logMessage("\t(*)Detected known sensor type:%s, sensor with ID:%s added!\n", type.c_str(), id.c_str());
-            }
-            //For TH
-            else if (type == "TH")
-            {
-                addSensor(new TH(id));
-                logMessage("\t(*)Detected known sensor type:%s, sensor with ID:%s added!\n", type.c_str(), id.c_str());
-            }
-            else
-            {
-                logMessage("\t(!)Unknown sensor type:%s, sensor with ID:%s added!\n", type.c_str(), id.c_str());
-            }
-        }
-        
+        createSensorList(Sensors, response); 
     }
 
     BaseSensor* getSensor(std::string uid)

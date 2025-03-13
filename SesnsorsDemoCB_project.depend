@@ -276,7 +276,7 @@
 	<unordered_map>
 	<map>
 
-1741681322 source:g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\program.cpp
+1741878399 source:g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\program.cpp
 	"libraries/manager.hpp"
 
 1740751986 h:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libs\helpers.hpp
@@ -306,31 +306,31 @@
 	<HardwareSerial.h>
 	<stdio.h>
 
-1739896549 source:g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\exceptions.cpp
+1741878218 source:g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\exceptions.cpp
 	"exceptions.hpp"
 
-1741626040 g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\exceptions.hpp
+1741878226 g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\exceptions.hpp
 	"logs.hpp"
 	"error_codes.hpp"
 	<stdexcept>
 
-1740655457 g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\logs.hpp
+1741877948 g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\logs.hpp
 	"config.hpp"
 
 1740653473 g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\config.hpp
 
-1740567134 g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\error_codes.hpp
+1741878033 g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\error_codes.hpp
 
-1740752021 source:g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\helpers.cpp
+1741878274 source:g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\helpers.cpp
 	"helpers.hpp"
 
-1740751994 g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\helpers.hpp
+1741878259 g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\helpers.hpp
 	"exceptions.hpp"
 	<string>
 	<vector>
 	<type_traits>
 
-1739954090 source:g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\logs.cpp
+1741878302 source:g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\logs.cpp
 	"logs.hpp"
 	<cstdarg>
 	<cstdio>
@@ -338,27 +338,25 @@
 	<Arduino.h>
 	<stdio.h>
 
-1740728515 source:g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\manager.cpp
+1741878320 source:g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\manager.cpp
 	"manager.hpp"
 
-1741680671 g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\manager.hpp
-	"parser.hpp"
-	"messenger.hpp"
-	"sensors.hpp"
+1741878316 g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\manager.hpp
+	"sensor_factory.hpp"
 	<vector>
 	<algorithm>
 
-1741680437 g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\parser.hpp
+1741878457 g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\parser.hpp
 	"exceptions.hpp"
 	"helpers.hpp"
 	<string>
 
-1741617798 g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\messenger.hpp
+1741877888 g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\messenger.hpp
 	"config.hpp"
 	"exceptions.hpp"
 	<string>
 
-1741681948 g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\sensors.hpp
+1741878210 g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\sensors.hpp
 	"exceptions.hpp"
 	"helpers.hpp"
 	"parser.hpp"
@@ -367,17 +365,23 @@
 	<unordered_map>
 	<map>
 
-1741617804 source:g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\messenger.cpp
+1741878344 source:g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\messenger.cpp
 	"messenger.hpp"
 	<Arduino.h>
 	<HardwareSerial.h>
 	<stdio.h>
 
-1741681582 source:g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\parser.cpp
+1741877622 source:g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\parser.cpp
 	"parser.hpp"
 	<cstdio>
 	<algorithm>
 
 1741680589 source:g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\sensors.cpp
 	"sensors.hpp"
+
+1741878389 g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\sensor_factory.hpp
+	"sensors.hpp"
+
+1741878206 source:g:\mùj disk\projekty\mta\lvgl\sesnsorsdemocb_project\libraries\sensor_factory.cpp
+	"sensor_factory.hpp"
 

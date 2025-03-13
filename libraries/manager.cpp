@@ -1,7 +1,13 @@
-/*
-* Copyright 2024 MTA
-* Author: Ing. Jiri Konecny
-*/
+/**
+ * @file messenger.cpp
+ * @brief Definition of the manager 
+ * 
+ * This source defines the manager functions and implementations.
+ * 
+ * @copyright 2025 MTA
+ * @author 
+ * Ing. Jiri Konecny
+ */
 
 /*********************
  *      INCLUDES

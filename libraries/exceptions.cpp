@@ -4,7 +4,7 @@
  * 
  * This source file defines the Exception functions and implementations.
  * 
- * @copyright 2024 MTA
+ * @copyright 2025 MTA
  * @author 
  * Ing. Jiri Konecny
  */

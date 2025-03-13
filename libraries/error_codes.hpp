@@ -18,10 +18,14 @@
  * @enum ErrorCode
  * @brief Enumeration of error codes for sensor and exception handling.
  *
- * - **VALUE_ERROR**: Indicates that a value is invalid.
- * - **VALUE_NOT_FOUND**: Indicates that a required value was not found.
- * - **CONFIG_ERROR**: Indicates an error in sensor configuration.
- * - **UPDATE_ERROR**: Indicates an error during an update operation.
+ * - VALUE_ERROR: Invalid value error.
+ * - VALUE_NOT_FOUND: Value not found.
+ * - INVALID_VALUE: Invalid value.
+ * - WARNING_CODE: Configuration error.
+ * - ERROR_CODE: Operation error.
+ * - CRTICAL_ERROR_CODE: Critical error, stop code.
+ * - NOT_FOUND: Value not found.
+ * - NOT_DEFINED_ERROR: Unknown error.
  */
 enum class ErrorCode {
     VALUE_ERROR     = -1,  ///< Invalid value error.

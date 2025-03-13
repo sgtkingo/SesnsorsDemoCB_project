@@ -1,30 +1,46 @@
+/**
+ * @file sensor_factory.hpp
+ * @brief Declares the sensor factory functions, for building list of real-to-digital sensors.
+ * 
+ * 
+ * @copyright 2025 MTA
+ * @author Ing. Jiri Konecny
+ * 
+ */
+
+#ifndef SENSOR_FACTORY_HPP
+#define SENSOR_FACTORY_HPP
+
 #include "sensors.hpp"
 
-#include <unordered_map>
-#include <memory>
-#include <string>
-#include <functional> // For std::function
+/**
+ * @brief Create a sensor by type.
+ * 
+ * This function creates a sensor object based on the given type and unique identifier.
+ * 
+ * @param type The sensor type.
+ * @param uid The unique sensor identifier.
+ * @return The sensor object.
+ */
+BaseSensor* createSensorByType(std::string type, std::string uid);
 
+/**
+ * @brief Create a list of sensors.
+ * 
+ * This function creates a fixed list of sensors.
+ * 
+ * @param memory The list of sensors.
+ */
+void createSensorList(std::vector<BaseSensor*> &memory);
 
-class SensorFactory {
-private:
-    std::unordered_map<std::string, std::function<std::unique_ptr<BaseSensor>()>> registry;
+/**
+ * @brief Create a list of sensors.
+ * 
+ * This function creates a list of sensors based on the given string source.
+ * 
+ * @param memory The list of sensors.
+ * @param stringSource The string source.
+ */
+void createSensorList(std::vector<BaseSensor*> &memory, std::string stringSource);
 
-public:
-    // Register class by name
-    template <typename T>
-    void registerSensor(const std::string& name, const std::string& id) {
-        registry[name] = []() -> std::unique_ptr<BaseSensor> {
-            return std::make_unique<T>(id);
-        };
-    }
-
-    // Create an object by name
-    std::unique_ptr<BaseSensor> createSensor(const std::string& name) const {
-        auto it = registry.find(name);
-        if (it != registry.end()) {
-            return it->second();
-        }
-        throw std::runtime_error("Sensor not found: " + name);
-    }
-};
+#endif // SENSOR_FACTORY_HPP

@@ -1,5 +1,5 @@
 /*
-* Copyright 2024 MTA
+* Copyright 2025 MTA
 * Author: Ing. Jiri Konecny
 */
 

@@ -7,7 +7,7 @@
  * an innerException pointer. The class provides a method to recursively print exception
  * details with indentation.
  * 
- * @copyright 2024 MTA
+ * @copyright 2025 MTA
  * @author 
  * Ing. Jiri Konecny
  */

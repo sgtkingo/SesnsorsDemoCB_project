@@ -2,14 +2,16 @@
  * @file messenger.cpp
  * @brief Definition of the messenger interface and related global functions.
  * 
- * This source defines the abstract interface IMessenger for sending and receiving
- * messages, as well as global functions for message operations. It includes configuration
- * and exception handling support.
+ * This header defines the global functions for message operations. It includes configuration
+ * and exception handling support..
  * 
  * @copyright 2024 MTA
  * @author 
  * Ing. Jiri Konecny
  */
+
+ #ifndef MESSANGER_HPP
+ #define MESSANGER_HPP
 
 #include "messenger.hpp"
 
@@ -55,3 +57,5 @@
     }
 
 #endif
+
+#endif // MESSANGER_HPP

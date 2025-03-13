@@ -7,7 +7,7 @@
  * Derived classes override printSensor() to print extra sensor-specific information.
  * Factory functions are provided to create sensor instances.
  * 
- * @copyright 2024 MTA
+ * @copyright 2025 MTA
  * @author Ing. Jiri Konecny
  * 
  */
@@ -730,7 +730,7 @@ T* createSensor(std::string uid) {
         throw SensorInitializationFailException("createSensor", "Error during sensor initialization.", new Exception(ex));
     }
 
-    logMessage("Sensor [%d]:%s created successfully.\n", sensor->UID, sensor->Type.c_str());
+    logMessage("Sensor [%s]:%s created successfully.\n", sensor->UID.c_str(), sensor->Type.c_str());
     return sensor;
 }
 

@@ -1,7 +1,14 @@
 /**
  * @file logs.c
  * @brief Implementation of logging functions.
+ * 
+ * @copyright 2024 MTA
+ * @author 
+ * Ing. Jiri Konecny
  */
+
+#ifndef LOGS_HPP
+#define LOGS_HPP
 
 #include "logs.hpp"
 //#include <stdarg.h>  // For variadic arguments
@@ -30,4 +37,6 @@ void logMessage(const char *format, ...) {
 
     va_end(args);
 }
+
+#endif // LOGS_HPP
 
